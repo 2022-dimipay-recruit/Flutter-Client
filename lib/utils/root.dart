@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
 import '../screens/home.dart';
 import '../screens/login.dart';
+import 'main_screen.dart';
 
 class Root extends GetWidget<AuthController> {
   @override
@@ -13,7 +14,7 @@ class Root extends GetWidget<AuthController> {
     return Obx(
       () {
         if (controller.isLogin.value) {
-          return Home();
+          return MainScreen();
         } else {
           return Login();
         }

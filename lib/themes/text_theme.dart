@@ -6,3 +6,6 @@ const loginSubTitle = TextStyle(
     fontSize: 18, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 const loginBtn = TextStyle(
     fontSize: 12, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
+
+final homeBottomNavigationBarLabel = TextStyle(
+    fontSize: 12, fontFamily: 'NotoSansKR', fontWeight: FontWeight.w700);
