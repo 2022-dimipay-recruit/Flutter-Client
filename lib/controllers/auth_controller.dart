@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakaoFlutterLib;
 
 import '../models/user.dart';
 import '../services/firestore_database.dart';
@@ -52,6 +53,44 @@ class AuthController extends GetxController {
 
     writeAccountInfo();
     isLogin.value = true;
+  }
+
+  void signInWithKakao() async {
+    try {
+      final installed = await kakaoFlutterLib.isKakaoTalkInstalled();
+      kakaoFlutterLib.OAuthToken loginToken = installed ? await kakaoFlutterLib.UserApi.instance.loginWithKakaoTalk() : await kakaoFlutterLib.UserApi.instance.loginWithKakaoAccount();
+
+      kakaoFlutterLib.User user = await kakaoFlutterLib.UserApi.instance.me();
+
+      loginUserInfo["userid"] = "kakao:${user.id}";
+      loginUserInfo["email"] = user.kakaoAccount!.email;
+      loginUserInfo["name"] = user.kakaoAccount!.profile!.nickname;
+      loginUserInfo["profileImgUrl"] = user.kakaoAccount!.profile!.profileImageUrl;
+
+      Response response = await _dio.post(
+          '', //TODO 백엔드 코드가 완료되면 백엔드 주소 추가 예정
+          data: {
+            "data": {
+              "access_token": loginToken.accessToken
+            }
+          });
+
+      await FirebaseAuth.instance.signInWithCustomToken(response.data["result"]);
+    } catch (e) {
+      if (e.toString().contains("User canceled login.")) {
+        Fluttertoast.showToast(
+            msg: "카카오 로그인을 취소하셨습니다.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Color(0xE6FFFFFF),
+            textColor: Colors.black,
+            fontSize: 13.0
+        );
+      } else {
+        print(e);
+      }
+    }
   }
 
   void logOut() async {

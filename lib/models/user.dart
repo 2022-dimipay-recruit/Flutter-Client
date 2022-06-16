@@ -14,4 +14,14 @@ class UserModel {
     email = documentSnapshot["email"];
     profileImg = documentSnapshot["profileImg"];
   }
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['id'] = id;
+    map['name'] = name;
+    map['email'] = email;
+    map['profileImg'] = profileImg;
+
+    return map;
+  }
 }

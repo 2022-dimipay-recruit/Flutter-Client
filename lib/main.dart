@@ -1,7 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_recruit_asked/token_reference.dart';
 import 'package:get/get.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 import 'utils/root.dart';
 import 'controllers/bindings/main_binding.dart';
@@ -9,6 +11,7 @@ import 'controllers/bindings/main_binding.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  KakaoSdk.init(nativeAppKey: TokenReference().kakaoNativeKey);
 
 
   runApp(MyApp());
