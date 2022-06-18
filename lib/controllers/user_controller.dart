@@ -14,8 +14,8 @@ class UserController extends GetxController {
     _userModel.value = UserModel();
   }
 
-  dynamic getProfileWidget(double _width) {
-    if (user.profileImg == "") {
+  dynamic getProfileImg(double _width) {
+    if (user.profileImg == null || user.profileImg == "") {
       return Icon(Icons.person_rounded, size: _width * 0.12);
     } else {
       return ExtendedImage.network(user.profileImg!, cache: true);
