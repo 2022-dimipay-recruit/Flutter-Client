@@ -38,6 +38,15 @@ final questionAnswerContent = TextStyle(
 final questionActionText = TextStyle(
     fontSize: 12, color: grayOne, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 
+final reportOptionDialogTitle = TextStyle(
+    fontSize: 20, color: Colors.white, fontFamily: 'Pretendard', fontWeight: FontWeight.w600);
+final reportOptionDialogOption = TextStyle(
+    fontSize: 14, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
+final reportSuccessDialogTitle = TextStyle(
+    fontSize: 16, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w600);
+final reportSuccessDialogContent = TextStyle(
+    fontSize: 14, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
+
 final purpleBtn = TextStyle(
     fontSize: 14, color: Colors.white, fontFamily: 'Pretendard', fontWeight: FontWeight.w700);
 final actionBtn = TextStyle(

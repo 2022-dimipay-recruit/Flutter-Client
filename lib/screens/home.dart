@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
-import 'package:flutter_recruit_asked/screens/widgets/big_action_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/custom_tabbar.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_button.dart';
+import 'package:flutter_recruit_asked/screens/widgets/questionbox_moreaction_dialog.dart';
 import 'package:flutter_recruit_asked/screens/widgets/small_action_button.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -263,43 +263,7 @@ class Home extends StatelessWidget {
                 child: GestureDetector(
                     onTap: () => showDialog(
                         context: context,
-                        builder: (_) => Dialog(
-                          backgroundColor: Colors.transparent,
-                          child: SizedBox(
-                            height: _height * 0.43,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  alignment: FractionalOffset.center,
-                                  width: _width * 0.923,
-                                  height: _height * 0.2,
-                                  padding: const EdgeInsets.all(20.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5)
-                                  ),
-                                  child: questionContentWidget
-                                ),
-                                SizedBox(height: _height * 0.0225),
-                                BigActionButton(
-                                  buttonType: BigActionButtonType.share,
-                                  clickAction: () => print("clicked"),
-                                ),
-                                SizedBox(height: _height * 0.0125),
-                                BigActionButton(
-                                  buttonType: BigActionButtonType.bookmark,
-                                  clickAction: () => print("clicked"),
-                                ),
-                                SizedBox(height: _height * 0.0125),
-                                BigActionButton(
-                                  buttonType: BigActionButtonType.report,
-                                  clickAction: () => print("clicked"),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )),
+                        builder: (_) => QuestionBoxMoreActionDialog(questionContentWidget: questionContentWidget)),
                     child: Icon(Icons.more_vert_rounded, color: grayOne)
                 ),
               )
