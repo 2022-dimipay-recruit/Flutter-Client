@@ -20,11 +20,11 @@ class Home extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Home Page"),
+            const Text("Home Page"),
             SizedBox(height: _height * 0.1),
             GestureDetector(
               onTap: () => Get.find<AuthController>().logOut(),
-              child: Text("클릭시 로그아웃"),
+              child: const Text("클릭시 로그아웃"),
             )
           ],
         )
