@@ -67,15 +67,31 @@ class AuthController extends GetxController {
       loginUserInfo["name"] = user.kakaoAccount!.profile!.nickname;
       loginUserInfo["profileImgUrl"] = user.kakaoAccount!.profile!.profileImageUrl;
 
-      Response response = await _dio.post(
-          '', //TODO 백엔드 코드가 완료되면 백엔드 주소 추가 예정
-          data: {
-            "data": {
+      late Response response;
+      try {
+        response = await _dio.post(
+            'https://dprc.tilto.kr/login/kakao',
+            data: {
               "access_token": loginToken.accessToken
             }
-          });
+        );
+      } on DioError catch (e) {
+        Fluttertoast.showToast(
+            msg: "오류가 발생했습니다.\n다시 시도해주세요.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Color(0xE6FFFFFF),
+            textColor: Colors.black,
+            fontSize: 13.0
+        );
+      }
 
-      await FirebaseAuth.instance.signInWithCustomToken(response.data["result"]);
+      
+      await FirebaseAuth.instance.signInWithCustomToken(response.data['data']['token']);
+
+      writeAccountInfo();
+      isLogin.value = true;
     } catch (e) {
       if (e.toString().contains("User canceled login.")) {
         Fluttertoast.showToast(
