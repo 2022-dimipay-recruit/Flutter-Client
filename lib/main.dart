@@ -14,10 +14,12 @@ void main() async {
   KakaoSdk.init(nativeAppKey: TokenReference().kakaoNativeKey);
 
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.dark));
@@ -33,7 +35,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       initialBinding: MainBinding(),
-      home: Root());
+      home: const Root());
   }
 
   void hideKeyboard(BuildContext context) {

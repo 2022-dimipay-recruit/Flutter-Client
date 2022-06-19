@@ -25,9 +25,9 @@ class Login extends GetWidget<AuthController> {
               "assets/images/logo.svg",
             ),
             SizedBox(height: _height * 0.02),
-            Text("Disked", style: loginTitle),
+            const Text("Disked", style: loginTitle),
             SizedBox(height: _height * 0.01),
-            Text("디미고에 대해 궁금한 모든 것", style: loginSubTitle),
+            const Text("디미고에 대해 궁금한 모든 것", style: loginSubTitle),
             SizedBox(height: _height * 0.225),
             GestureDetector(
                 onTap: () => controller.signInWithKakao(),

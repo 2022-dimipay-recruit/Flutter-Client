@@ -6,6 +6,8 @@ import '../screens/home.dart';
 import '../screens/login.dart';
 
 class Root extends GetWidget<AuthController> {
+  const Root({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     if (controller.user?.uid != null) { controller.isLogin.value = true; }
