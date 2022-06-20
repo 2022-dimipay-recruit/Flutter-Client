@@ -179,6 +179,7 @@ class Home extends StatelessWidget {
                   width: _width * 0.875,
                   height: _height * 0.57,
                   child: ListView.builder(
+                      physics: BouncingScrollPhysics(),
                       itemCount: 10,
                       itemBuilder: (context, index) {
                         return questionBox(context, index);
