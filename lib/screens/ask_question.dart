@@ -47,7 +47,7 @@ class AskQuestion extends GetWidget<QuestionController> {
                 Text("질문하기", style: appBarTitle),
                 Positioned(
                   left: _width * 0.075,
-                  child: Icon(Icons.arrow_back_ios_sharp, size: 24),
+                  child: GestureDetector(onTap: () => Get.back(), child: Icon(Icons.arrow_back_ios_sharp, size: 24)),
                 )
               ],
             ),
