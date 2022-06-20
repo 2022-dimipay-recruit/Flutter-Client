@@ -4,7 +4,7 @@ import 'package:flutter_recruit_asked/themes/text_theme.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-import '../controllers/auth_controller.dart';
+import '../../controllers/auth_controller.dart';
 
 class Login extends GetWidget<AuthController> {
   Login({Key? key}) : super(key: key);
@@ -61,7 +61,7 @@ class Login extends GetWidget<AuthController> {
             width: _width * 0.055,
           ),
           SizedBox(width: _width * 0.03),
-          Text("${isGoogleLogin ? "구글" : "카카오톡"}로 로그인", style: loginBtn)
+          Text("${isGoogleLogin ? "구글" : "카카오"}로 로그인", style: loginBtn)
         ],
       ),
     );
