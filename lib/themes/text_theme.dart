@@ -20,6 +20,8 @@ final profileFollwer = TextStyle(
     fontSize: 16, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 final profileIntroduce = TextStyle(
     fontSize: 14, color: grayOne, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
+final profileFollowBtn = TextStyle(
+    fontSize: 14, color: grayOne, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 
 final questionListSort = TextStyle(
     fontSize: 14, color: grayOne, fontFamily: "Pretendard", fontWeight: FontWeight.w400);

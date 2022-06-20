@@ -101,7 +101,27 @@ class Home extends StatelessWidget {
                             )
                           ],
                         ),
-                        PurpleButton(text: "질문하기"),
+                        Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () => print("팔로우 버튼 클릭"),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.add_circle_outline_rounded, color: grayOne, size: 16),
+                                  SizedBox(width: 4),
+                                  Text("팔로우", style: profileFollowBtn)
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 12),
+                            PurpleButton(
+                              text: "질문하기",
+                              clickAction: () => Get.to(AskQuestion(), transition: Transition.rightToLeft),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),
