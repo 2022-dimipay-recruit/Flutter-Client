@@ -21,10 +21,14 @@ class Login extends GetWidget<AuthController> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Disked", style: loginTitle),
+            SvgPicture.asset(
+              "assets/images/logo.svg",
+            ),
+            SizedBox(height: _height * 0.02),
+            const Text("Disked", style: loginTitle),
             SizedBox(height: _height * 0.01),
-            Text("디미고에 대해 궁금한 모든 것", style: loginSubTitle),
-            SizedBox(height: _height * 0.275),
+            const Text("디미고에 대해 궁금한 모든 것", style: loginSubTitle),
+            SizedBox(height: _height * 0.225),
             GestureDetector(
                 onTap: () => controller.signInWithKakao(),
                 child: loginBtnWidget(false)

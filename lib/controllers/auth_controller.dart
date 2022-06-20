@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakaoFlutterLib;
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao_flutter_lib;
 
 import '../models/user.dart';
 import '../services/firestore_database.dart';
@@ -23,12 +23,15 @@ class AuthController extends GetxController {
 
   final Dio _dio = Get.find<Dio>();
 
-
   @override
   onInit() async {
+    super.onInit();
     _firebaseUser.bindStream(authInstance.authStateChanges());
     _firebaseUser.value = authInstance.currentUser;
-    if (user != null) { Get.find<UserController>().user = await FirestoreDatabase().getUser(user!.uid); }
+    if (user != null) {
+      Get.find<UserController>().user =
+          await FirestoreDatabase().getUser(user!.uid);
+    }
   }
 
   void signInWithGoogle() async {
@@ -37,14 +40,15 @@ class AuthController extends GetxController {
 
     // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth =
-    await googleUser?.authentication;
+        await googleUser?.authentication;
 
     // Create a new credential
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
-    UserCredential _authResult = await FirebaseAuth.instance.signInWithCredential(credential);
+    UserCredential _authResult =
+        await FirebaseAuth.instance.signInWithCredential(credential);
 
     loginUserInfo["userid"] = _authResult.user?.uid;
     loginUserInfo["email"] = googleUser?.email;
@@ -57,25 +61,40 @@ class AuthController extends GetxController {
 
   void signInWithKakao() async {
     try {
-      final installed = await kakaoFlutterLib.isKakaoTalkInstalled();
-      kakaoFlutterLib.OAuthToken loginToken = installed ? await kakaoFlutterLib.UserApi.instance.loginWithKakaoTalk() : await kakaoFlutterLib.UserApi.instance.loginWithKakaoAccount();
+      final installed = await kakao_flutter_lib.isKakaoTalkInstalled();
+      kakao_flutter_lib.OAuthToken loginToken = installed
+          ? await kakao_flutter_lib.UserApi.instance.loginWithKakaoTalk()
+          : await kakao_flutter_lib.UserApi.instance.loginWithKakaoAccount();
 
-      kakaoFlutterLib.User user = await kakaoFlutterLib.UserApi.instance.me();
+      kakao_flutter_lib.User user =
+          await kakao_flutter_lib.UserApi.instance.me();
 
       loginUserInfo["userid"] = "kakao:${user.id}";
       loginUserInfo["email"] = user.kakaoAccount!.email;
       loginUserInfo["name"] = user.kakaoAccount!.profile!.nickname;
-      loginUserInfo["profileImgUrl"] = user.kakaoAccount!.profile!.profileImageUrl;
+      loginUserInfo["profileImgUrl"] =
+          user.kakaoAccount!.profile!.profileImageUrl;
 
-      Response response = await _dio.post(
-          '', //TODO 백엔드 코드가 완료되면 백엔드 주소 추가 예정
-          data: {
-            "data": {
-              "access_token": loginToken.accessToken
-            }
-          });
+      late Response response;
+      try {
+        response = await _dio.post('https://dprc.tilto.kr/login/kakao',
+            data: {"access_token": loginToken.accessToken});
+      } on DioError catch (e) {
+        Fluttertoast.showToast(
+            msg: "오류가 발생했습니다.\n다시 시도해주세요.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: const Color(0xE6FFFFFF),
+            textColor: Colors.black,
+            fontSize: 13.0);
+      }
 
-      await FirebaseAuth.instance.signInWithCustomToken(response.data["result"]);
+      await FirebaseAuth.instance
+          .signInWithCustomToken(response.data['data']['token']);
+
+      writeAccountInfo();
+      isLogin.value = true;
     } catch (e) {
       if (e.toString().contains("User canceled login.")) {
         Fluttertoast.showToast(
@@ -83,10 +102,9 @@ class AuthController extends GetxController {
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
-            backgroundColor: Color(0xE6FFFFFF),
+            backgroundColor: const Color(0xE6FFFFFF),
             textColor: Colors.black,
-            fontSize: 13.0
-        );
+            fontSize: 13.0);
       } else {
         print(e);
       }
@@ -108,8 +126,7 @@ class AuthController extends GetxController {
           timeInSecForIosWeb: 1,
           backgroundColor: const Color(0xE6FFFFFF),
           textColor: Colors.black,
-          fontSize: 13.0
-      );
+          fontSize: 13.0);
     } on FirebaseAuthException catch (e) {
       Get.snackbar(
         "로그아웃 오류",
@@ -137,8 +154,7 @@ class AuthController extends GetxController {
       } else {
         await FirestoreDatabase().createNewUser(_user);
       }
-    }
-    );
+    });
 
     Get.find<UserController>().user = _user;
   }
