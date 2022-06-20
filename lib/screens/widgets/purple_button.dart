@@ -5,18 +5,22 @@ import '../../themes/text_theme.dart';
 
 class PurpleButton extends StatelessWidget {
   final String text;
-  PurpleButton({required this.text});
+  dynamic clickAction;
+  PurpleButton({required this.text, required this.clickAction});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 70,
-      height: 35,
-      decoration: BoxDecoration(
-        color: purpleOne,
-        borderRadius: BorderRadius.circular(5),
+    return GestureDetector(
+      onTap: clickAction,
+      child: Container(
+        width: 70,
+        height: 35,
+        decoration: BoxDecoration(
+          color: purpleOne,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Center(child: Text(text, style: purpleBtn)),
       ),
-      child: Center(child: Text(text, style: purpleBtn)),
     );
   }
 }

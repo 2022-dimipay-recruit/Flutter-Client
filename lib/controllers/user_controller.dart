@@ -1,5 +1,6 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_recruit_asked/themes/color_theme.dart';
 import 'package:get/get.dart';
 
 import '../models/user.dart';
@@ -14,9 +15,17 @@ class UserController extends GetxController {
     _userModel.value = UserModel();
   }
 
-  dynamic getProfileWidget(double _width) {
-    if (user.profileImg == "") {
-      return Icon(Icons.person_rounded, size: _width * 0.12);
+  dynamic getProfileImg(double _width) {
+    if (user.profileImg == null || user.profileImg == "") {
+      return Container(
+        height: _width * 0.17,
+        width: _width * 0.17,
+        decoration: BoxDecoration(
+          color: purpleOne,
+          borderRadius: BorderRadius.circular(150)
+        ),
+        child: Icon(Icons.person_rounded, size: _width * 0.12),
+      );
     } else {
       return ExtendedImage.network(user.profileImg!, cache: true);
     }
