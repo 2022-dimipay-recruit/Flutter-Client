@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 
 import '../themes/color_theme.dart';
 import '../themes/text_theme.dart';
+import 'ask_question.dart';
 
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
@@ -38,7 +39,7 @@ class Home extends StatelessWidget {
                     alignment: Alignment.center,
                     children: [
                       SizedBox(width: _width),
-                      Text("dohui_doch", style: appBarUserId),
+                      Text("dohui_doch", style: appBarTitle),
                       Positioned(
                         right: _width * 0.075,
                         child: SvgPicture.asset(
@@ -118,7 +119,7 @@ class Home extends StatelessWidget {
                             SizedBox(height: 12),
                             PurpleButton(
                               text: "질문하기",
-                              clickAction: () => Get.to(AskQuestion(), transition: Transition.rightToLeft),
+                              clickAction: () => Get.to(AskQuestion(askQuestionMode: AskQuestionMode.personal), transition: Transition.rightToLeft),
                             ),
                           ],
                         )

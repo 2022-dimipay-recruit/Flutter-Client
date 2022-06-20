@@ -12,7 +12,7 @@ const loginBtn = TextStyle(
 final homeBottomNavigationBarLabel = TextStyle(
     fontSize: 12, fontFamily: 'Pretendard', fontWeight: FontWeight.w700);
 
-final appBarUserId = TextStyle(
+final appBarTitle = TextStyle(
     fontSize: 18, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 final profileNickname = TextStyle(
     fontSize: 18, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w600);
@@ -49,8 +49,15 @@ final reportSuccessDialogTitle = TextStyle(
 final reportSuccessDialogContent = TextStyle(
     fontSize: 14, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 
+final askQuestionAuthor = TextStyle(
+    fontSize: 16, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
+final askQuestionContent = TextStyle(
+    fontSize: 18, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
+
 final purpleBtn = TextStyle(
     fontSize: 14, color: Colors.white, fontFamily: 'Pretendard', fontWeight: FontWeight.w700);
+final purpleSwitch = TextStyle(
+    fontSize: 12, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 final actionBtn = TextStyle(
     fontSize: 12, color: grayOne, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 final tabBarTitle = TextStyle(

@@ -128,8 +128,9 @@ class QuestionBoxMoreActionDialog extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: _displayHeight * 0.01),
-                  GestureDetector(
-                    onTap: () {
+                  PurpleButton(
+                    text: "신고하기",
+                    clickAction: () {
                       Get.back();
                       //TODO 백엔드 신고 전달 코드
                       showDialog(
@@ -137,7 +138,6 @@ class QuestionBoxMoreActionDialog extends StatelessWidget {
                         builder: (_) => reportSuccessDialog(),
                       );
                     },
-                    child: PurpleButton(text: "신고하기")
                   )
                 ],
               ),
