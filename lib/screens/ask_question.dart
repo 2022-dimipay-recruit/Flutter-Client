@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -59,12 +60,12 @@ class AskQuestion extends GetWidget<QuestionController> {
                   children: [
                     Row(
                       children: [
-                        CircleAvatar(
+                        CircularProfileAvatar(
+                          '',
+                          child: Get.find<UserController>().getProfileImg(_width),
                           radius: _width * 0.061,
-                          child: ClipRRect(
-                            child: _userController.getProfileImg(_width),
-                            borderRadius: BorderRadius.circular(180.0),
-                          ),
+                          backgroundColor: Colors.transparent,
+                          cacheImage: true,
                         ),
                         SizedBox(width: 12),
                         Column(

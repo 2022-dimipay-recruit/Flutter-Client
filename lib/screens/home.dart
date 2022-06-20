@@ -1,3 +1,4 @@
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
@@ -58,12 +59,12 @@ class Home extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            CircleAvatar(
+                            CircularProfileAvatar(
+                              '',
+                              child: _userController.getProfileImg(_width),
                               radius: _width * 0.105,
-                              child: ClipRRect(
-                                child: _userController.getProfileImg(_width),
-                                borderRadius: BorderRadius.circular(180.0),
-                              ),
+                              backgroundColor: Colors.transparent,
+                              cacheImage: true,
                             ),
                             SizedBox(width: _width * 0.05),
                             Column(
@@ -235,12 +236,12 @@ class Home extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CircleAvatar(
+                  CircularProfileAvatar(
+                    '',
+                    child: Get.find<UserController>().getProfileImg(_width),
                     radius: _width * 0.061,
-                    child: ClipRRect(
-                      child: Get.find<UserController>().getProfileImg(_width),
-                      borderRadius: BorderRadius.circular(180.0),
-                    ),
+                    backgroundColor: Colors.transparent,
+                    cacheImage: true,
                   ),
                   SizedBox(width: _width * 0.03),
                   Column(
