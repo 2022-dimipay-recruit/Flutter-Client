@@ -40,7 +40,7 @@ class PurpleSwitch extends StatelessWidget {
               ),
             ),
             SizedBox(
-              width: 52,
+              width: 55,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
