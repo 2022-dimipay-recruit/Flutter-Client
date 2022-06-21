@@ -1,3 +1,4 @@
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_recruit_asked/themes/color_theme.dart';
@@ -15,20 +16,29 @@ class UserController extends GetxController {
     _userModel.value = UserModel();
   }
 
-  dynamic getProfileImg(double _width) {
+  dynamic getProfileWidget(double _width, double radiusRatio) {
+    dynamic imageWidget;
     if (user.profileImg == null || user.profileImg == "") {
-      return Container(
+      imageWidget = Container(
         height: _width * 0.17,
         width: _width * 0.17,
         decoration: BoxDecoration(
           color: purpleOne,
           borderRadius: BorderRadius.circular(150)
         ),
-        child: Icon(Icons.person_rounded, size: _width * 0.12),
+        child: Icon(Icons.person_rounded, color: Colors.white, size: _width * 0.08),
       );
     } else {
-      return ExtendedImage.network(user.profileImg!, cache: true);
+      imageWidget = ExtendedImage.network(user.profileImg!, cache: true);
     }
+
+    return CircularProfileAvatar(
+      '',
+      child: imageWidget,
+      radius: _width * radiusRatio,
+      backgroundColor: Colors.transparent,
+      cacheImage: true,
+    );
   }
 
 }

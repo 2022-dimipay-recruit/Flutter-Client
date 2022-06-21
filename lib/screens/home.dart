@@ -6,6 +6,7 @@ import 'package:flutter_recruit_asked/screens/widgets/custom_tabbar.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/questionbox_moreaction_dialog.dart';
 import 'package:flutter_recruit_asked/screens/widgets/small_action_button.dart';
+import 'package:flutter_recruit_asked/screens/widgets/sort_button.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
@@ -59,13 +60,7 @@ class Home extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            CircularProfileAvatar(
-                              '',
-                              child: _userController.getProfileImg(_width),
-                              radius: _width * 0.105,
-                              backgroundColor: Colors.transparent,
-                              cacheImage: true,
-                            ),
+                            _userController.getProfileWidget(_width, 0.105),
                             SizedBox(width: _width * 0.05),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -157,21 +152,7 @@ class Home extends StatelessWidget {
             children: [
               Positioned(
                 right: _width * 0.05,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      height: 37,
-                      width: 27,
-                      child: Stack(
-                        children: [
-                          Positioned(top: 0, child: Icon(Icons.arrow_drop_up_rounded, size: 30)),
-                          Positioned(bottom: 0, child: Icon(Icons.arrow_drop_down_rounded, size: 30)),
-                        ],
-                      ),
-                    ),
-                    Text("최신순", style: questionListSort),
-                  ],
-                ),
+                child: SortButton(btnType: SortButtonType.latest)
               ),
               Positioned(
                 bottom: 0,
@@ -237,13 +218,7 @@ class Home extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CircularProfileAvatar(
-                    '',
-                    child: Get.find<UserController>().getProfileImg(_width),
-                    radius: _width * 0.061,
-                    backgroundColor: Colors.transparent,
-                    cacheImage: true,
-                  ),
+                  Get.find<UserController>().getProfileWidget(_width, 0.061),
                   SizedBox(width: _width * 0.03),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
