@@ -170,6 +170,7 @@ class AskQuestion extends GetWidget<QuestionController> {
                       ),
                     ),
                     PurpleButton(
+                      buttonMode: PurpleButtonMode.regular,
                       text: "질문하기",
                       clickAction: () {
                         //TODO 질문 전송

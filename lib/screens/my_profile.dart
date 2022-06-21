@@ -21,6 +21,8 @@ class MyProfile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("MyProfile Page"),
+            SizedBox(height: _height * 0.1),
+            GestureDetector(onTap: () => Get.find<AuthController>().logOut(), child: Text("로그아웃하기"),)
           ],
         )
       ),

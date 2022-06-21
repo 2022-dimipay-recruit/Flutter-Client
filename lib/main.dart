@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_recruit_asked/themes/color_theme.dart';
 import 'package:flutter_recruit_asked/token_reference.dart';
 import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -25,6 +26,12 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.dark));
 
     return GetMaterialApp(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          primary: grayTwo,
+          secondary: grayTwo,
+        ),
+      ),
       builder: (context, child) => Scaffold(
         // 화면 클릭 시, 키보드 숨기기
         body: GestureDetector(

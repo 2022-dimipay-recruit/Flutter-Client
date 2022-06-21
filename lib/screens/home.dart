@@ -119,6 +119,7 @@ class Home extends StatelessWidget {
                             ),
                             SizedBox(height: 12),
                             PurpleButton(
+                              buttonMode: PurpleButtonMode.regular,
                               text: "질문하기",
                               clickAction: () => Get.to(AskQuestion(askQuestionMode: AskQuestionMode.personal), transition: Transition.rightToLeft),
                             ),
