@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
 import 'package:flutter_recruit_asked/screens/widgets/custom_tabbar.dart';
+import 'package:flutter_recruit_asked/screens/widgets/profile_widget.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/questionbox_moreaction_dialog.dart';
 import 'package:flutter_recruit_asked/screens/widgets/small_action_button.dart';
@@ -27,6 +28,7 @@ class Home extends StatelessWidget {
 
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: SafeArea(
           child: Stack(
@@ -55,54 +57,7 @@ class Home extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            CircularProfileAvatar(
-                              '',
-                              child: _userController.getProfileImg(_width),
-                              radius: _width * 0.105,
-                              backgroundColor: Colors.transparent,
-                              cacheImage: true,
-                            ),
-                            SizedBox(width: _width * 0.05),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text("유도히", style: profileNickname),
-                                    SizedBox(width: _width * 0.0125),
-                                    Container(
-                                      width: 20,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: purpleOne
-                                      ),
-                                      child: Center(
-                                        child: SvgPicture.asset(
-                                          "assets/images/icons/share.svg",
-                                          color: Colors.white,
-                                          width: 16,
-                                          height: 16,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 4),
-                                Text("팔로워 213", style: profileFollwer),
-                                SizedBox(height: 2),
-                                Text("반가워요 여러분", style: profileIntroduce),
-                              ],
-                            )
-                          ],
-                        ),
+                        ProfileWidget(user: _userController.user, showShareBtn: true),
                         Column(
                           children: [
                             GestureDetector(

@@ -60,5 +60,7 @@ final purpleSwitch = TextStyle(
     fontSize: 12, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 final actionBtn = TextStyle(
     fontSize: 12, color: grayOne, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
+final listBtn = TextStyle(
+    fontSize: 14, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 final tabBarTitle = TextStyle(
     fontSize: 16, fontFamily: 'Pretendard', fontWeight: FontWeight.w600);
