@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_recruit_asked/screens/community.dart';
-import 'package:flutter_recruit_asked/screens/my_profile.dart';
+import 'package:flutter_recruit_asked/screens/myprofile/my_profile.dart';
 import 'package:flutter_recruit_asked/themes/color_theme.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
