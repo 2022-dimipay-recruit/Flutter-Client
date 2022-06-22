@@ -35,6 +35,7 @@ class AskQuestion extends GetWidget<QuestionController> {
 
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Stack(
           alignment: Alignment.topCenter,
