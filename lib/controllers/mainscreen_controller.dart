@@ -7,5 +7,5 @@ class MainScreenController extends GetxController {
   RxInt selectNavigationBarIndex = 0.obs;
   RxList<Widget> nowShowWindow = <Widget>[Home()].obs;
 
-  set changeShowWindow(Widget window) => nowShowWindow.value = [window];
+  set showWindow(Widget window) => nowShowWindow.value = [window];
 }
