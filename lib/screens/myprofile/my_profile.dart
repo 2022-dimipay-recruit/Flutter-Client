@@ -4,6 +4,7 @@ import 'package:flutter_recruit_asked/controllers/mainscreen_controller.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
 import 'package:flutter_recruit_asked/screens/myprofile/change_profile.dart';
 import 'package:flutter_recruit_asked/screens/myprofile/following_list.dart';
+import 'package:flutter_recruit_asked/screens/myprofile/question_list.dart';
 import 'package:flutter_recruit_asked/screens/widgets/simple_list_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/profile_widget.dart';
 import 'package:flutter_svg/svg.dart';
@@ -71,8 +72,8 @@ class MyProfile extends GetWidget<UserController> {
                     SizedBox(height: _height * 0.02),
                     Divider(color: grayFive, thickness: 1),
                     SimpleListButton(text: "내가 팔로우한 사람들", btnType: SimpleListButtonType.black, clickAction: () => _mainScreenController.showWindow = FollowingList()),
-                    SimpleListButton(text: "내 질문 목록", btnType: SimpleListButtonType.black, clickAction: () => print("클릭")),
-                    SimpleListButton(text: "내 저장 목록", btnType: SimpleListButtonType.black, clickAction: () => print("클릭")),
+                    SimpleListButton(text: "내 질문 목록", btnType: SimpleListButtonType.black, clickAction: () => _mainScreenController.showWindow = QuestionList(questionType: QuestionListType.myQuestion)),
+                    SimpleListButton(text: "내 저장 목록", btnType: SimpleListButtonType.black, clickAction: () => _mainScreenController.showWindow = QuestionList(questionType: QuestionListType.myBookmark)),
                     SimpleListButton(text: "로그아웃", btnType: SimpleListButtonType.red, clickAction: () => _authController.logOut()),
                   ],
                 ),
