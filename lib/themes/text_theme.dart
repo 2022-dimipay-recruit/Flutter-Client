@@ -65,6 +65,9 @@ final changeProfileChangeTextLength = TextStyle(
 final changeProfileChangeTextField = TextStyle(
     fontSize: 14, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 
+final followingListTitle = TextStyle(
+    fontSize: 14, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
+
 final purpleBtn = TextStyle(
     fontSize: 14, color: Colors.white, fontFamily: 'Pretendard', fontWeight: FontWeight.w700);
 final purpleSwitch = TextStyle(
@@ -77,5 +80,9 @@ final detailListBtnTitle = TextStyle(
     fontSize: 14, color: purpleOne, fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
 final detailListBtnContent = TextStyle(
     fontSize: 14, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
+final personBoxTitle = TextStyle(
+    fontSize: 16, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
+final personBoxSubTitle = TextStyle(
+    fontSize: 14, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
 final tabBarTitle = TextStyle(
     fontSize: 16, fontFamily: 'Pretendard', fontWeight: FontWeight.w600);
