@@ -1,5 +1,6 @@
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_recruit_asked/controllers/mainscreen_controller.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
 import 'package:flutter_recruit_asked/screens/widgets/detail_list_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/person_box.dart';
@@ -19,6 +20,8 @@ class FollowingList extends GetWidget<UserController> {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
 
+    MainScreenController _mainScreenController = Get.find<MainScreenController>();
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -29,7 +32,7 @@ class FollowingList extends GetWidget<UserController> {
             Text(controller.user.id!, style: appBarTitle),
             Positioned(
               left: _width * 0.075,
-              child: GestureDetector(onTap: () => Get.back(), child: Icon(Icons.arrow_back_ios_sharp, size: 24)),
+              child: GestureDetector(onTap: () => _mainScreenController.showWindow = _mainScreenController.bottomNavigationBarPages[3], child: Icon(Icons.arrow_back_ios_sharp, size: 24)),
             ),
             Positioned(
               top: _height * 0.07,

@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_recruit_asked/controllers/mainscreen_controller.dart';
-import 'package:flutter_recruit_asked/screens/community.dart';
-import 'package:flutter_recruit_asked/screens/myprofile/my_profile.dart';
 import 'package:flutter_recruit_asked/themes/color_theme.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-import '../controllers/user_controller.dart';
-import '../screens/home.dart';
-import '../screens/search.dart';
 import '../themes/text_theme.dart';
 
 class MainScreen extends GetWidget<MainScreenController> {
@@ -22,13 +17,6 @@ class MainScreen extends GetWidget<MainScreenController> {
       '검색': 'search',
       '내 정보': 'user'
     };
-
-    List pages = [
-      Home(),
-      Community(),
-      Search(),
-      MyProfile()
-    ];
 
     List<BottomNavigationBarItem> bottomNavigatorItem = [
       BottomNavigationBarItem(
@@ -49,7 +37,7 @@ class MainScreen extends GetWidget<MainScreenController> {
       ),
     ];
 
-    for (int i=0; i<pages.length; i++) {
+    for (int i=0; i < controller.bottomNavigationBarPages.length; i++) {
       String? label = bottomNavigatorItem[i].label;
       bottomNavigatorItem[i] = BottomNavigationBarItem(
         label: label,
@@ -69,7 +57,7 @@ class MainScreen extends GetWidget<MainScreenController> {
           currentIndex: controller.selectNavigationBarIndex.value,
           onTap: (int index) {
             controller.selectNavigationBarIndex.value = index;
-            controller.nowShowWindow.value = [pages[controller.selectNavigationBarIndex.value]];
+            controller.nowShowWindow.value = [controller.bottomNavigationBarPages[controller.selectNavigationBarIndex.value]];
           },
           items: bottomNavigatorItem,
         ),
