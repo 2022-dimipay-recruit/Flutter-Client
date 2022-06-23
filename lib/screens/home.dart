@@ -8,6 +8,7 @@ import 'package:flutter_recruit_asked/screens/widgets/profile_widget.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/questionbox_moreaction_dialog.dart';
 import 'package:flutter_recruit_asked/screens/widgets/small_action_button.dart';
+import 'package:flutter_recruit_asked/screens/widgets/sort_button.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
@@ -114,21 +115,7 @@ class Home extends StatelessWidget {
             children: [
               Positioned(
                 right: _width * 0.05,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      height: 37,
-                      width: 27,
-                      child: Stack(
-                        children: [
-                          Positioned(top: 0, child: Icon(Icons.arrow_drop_up_rounded, size: 30)),
-                          Positioned(bottom: 0, child: Icon(Icons.arrow_drop_down_rounded, size: 30)),
-                        ],
-                      ),
-                    ),
-                    Text("최신순", style: questionListSort),
-                  ],
-                ),
+                child: SortButton(btnType: SortButtonType.latest)
               ),
               Positioned(
                 bottom: 0,
