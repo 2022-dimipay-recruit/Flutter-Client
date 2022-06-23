@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
 import 'package:flutter_recruit_asked/screens/widgets/custom_tabbar.dart';
+import 'package:flutter_recruit_asked/screens/widgets/personal_question_box.dart';
+import 'package:flutter_recruit_asked/screens/widgets/profile_widget.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/questionbox_moreaction_dialog.dart';
 import 'package:flutter_recruit_asked/screens/widgets/small_action_button.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_recruit_asked/screens/widgets/sort_button.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../models/question.dart';
 import '../themes/color_theme.dart';
 import '../themes/text_theme.dart';
 import 'ask_question.dart';
@@ -28,6 +31,7 @@ class Home extends StatelessWidget {
 
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: SafeArea(
           child: Stack(
@@ -56,48 +60,7 @@ class Home extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            _userController.getProfileWidget(_width, 0.105),
-                            SizedBox(width: _width * 0.05),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text("유도히", style: profileNickname),
-                                    SizedBox(width: _width * 0.0125),
-                                    Container(
-                                      width: 20,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: purpleOne
-                                      ),
-                                      child: Center(
-                                        child: SvgPicture.asset(
-                                          "assets/images/icons/share.svg",
-                                          color: Colors.white,
-                                          width: 16,
-                                          height: 16,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 4),
-                                Text("팔로워 213", style: profileFollwer),
-                                SizedBox(height: 2),
-                                Text("반가워요 여러분", style: profileIntroduce),
-                              ],
-                            )
-                          ],
-                        ),
+                        ProfileWidget(user: _userController.user, showShareBtn: true),
                         Column(
                           children: [
                             GestureDetector(
@@ -163,7 +126,7 @@ class Home extends StatelessWidget {
                       physics: BouncingScrollPhysics(),
                       itemCount: 10,
                       itemBuilder: (context, index) {
-                        return questionBox(context, index);
+                        return PersonalQuestionBox(question: QuestionModel(questionType: QuestionType.personal, publicMode: QuestionPublicMode.anonymous, content: "하이 반가워", author: "윤지", date: "2주 전"), index: index);
                       }
                   ),
                 ),
@@ -175,114 +138,5 @@ class Home extends StatelessWidget {
     }
 
     return result;
-  }
-
-  questionBox(BuildContext context, int index) {
-    dynamic questionContentWidget = SizedBox(
-      child: Hero(
-        tag: "homeQuestionBox_$index",
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: purpleOne
-                  ),
-                  child: Center(
-                    child: Text("Q", style: questionCircleIcon),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("익명", style: questionType),
-                    SizedBox(height: 4),
-                    Text("하이 방가워", style: questionContent),
-                  ],
-                )
-              ],
-            ),
-            SizedBox(height: _height * 0.02),
-            SizedBox(
-              width: _width * 0.84,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Get.find<UserController>().getProfileWidget(_width, 0.061),
-                  SizedBox(width: _width * 0.03),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text("윤지", style: questionAnswerPerson),
-                          SizedBox(width: 2),
-                          Text("2주 전", style: questionAnswerDate),
-                        ],
-                      ),
-                      SizedBox(height: 8),
-                      Text("메롱이다 메롱", style: questionAnswerContent)
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
-
-    return Container(
-      width: _width * 0.85,
-      margin: EdgeInsets.only(bottom: _height * 0.0425),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              questionContentWidget,
-              Positioned(
-                right: _width * 0.025,
-                bottom: 0,
-                child: GestureDetector(
-                    onTap: () => showDialog(
-                        context: context,
-                        builder: (_) => QuestionBoxMoreActionDialog(questionContentWidget: questionContentWidget)),
-                    child: Icon(Icons.more_vert_rounded, color: grayOne)
-                ),
-              )
-            ],
-          ),
-          SizedBox(height: _height * 0.025),
-          Center(
-            child: SizedBox(
-              width: _width * 0.75,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SmallActionButton(buttonType: SmallActionButtonType.like, clickAction: () => print("좋아요")),
-                  SmallActionButton(buttonType: SmallActionButtonType.modify, clickAction: () => print("수정")),
-                  SmallActionButton(buttonType: SmallActionButtonType.remove, clickAction: () => print("지우기")),
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    );
   }
 }

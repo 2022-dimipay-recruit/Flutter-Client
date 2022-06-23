@@ -24,6 +24,7 @@ class Community extends StatelessWidget {
 
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: SafeArea(
           child: Stack(
