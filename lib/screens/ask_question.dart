@@ -35,6 +35,7 @@ class AskQuestion extends GetWidget<QuestionController> {
 
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Stack(
           alignment: Alignment.topCenter,
@@ -60,13 +61,7 @@ class AskQuestion extends GetWidget<QuestionController> {
                   children: [
                     Row(
                       children: [
-                        CircularProfileAvatar(
-                          '',
-                          child: Get.find<UserController>().getProfileImg(_width),
-                          radius: _width * 0.061,
-                          backgroundColor: Colors.transparent,
-                          cacheImage: true,
-                        ),
+                        Get.find<UserController>().getProfileWidget(_width, 0.061),
                         SizedBox(width: 12),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

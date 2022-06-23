@@ -17,6 +17,7 @@ class Login extends GetWidget<AuthController> {
     _width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
