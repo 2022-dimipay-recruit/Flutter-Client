@@ -1,12 +1,14 @@
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_recruit_asked/models/user.dart';
+import 'package:flutter_recruit_asked/screens/question_answer.dart';
 import 'package:flutter_recruit_asked/screens/widgets/questionbox_moreaction_dialog.dart';
 import 'package:flutter_recruit_asked/screens/widgets/small_action_button.dart';
 import 'package:flutter_recruit_asked/themes/color_theme.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../../controllers/question_controller.dart';
 import '../../controllers/user_controller.dart';
 import '../../models/question.dart';
 import '../../themes/text_theme.dart';
@@ -54,37 +56,52 @@ class PersonalQuestionBox extends StatelessWidget {
                 )
               ],
             ),
-            SizedBox(height: _displayHeight * 0.02),
-            SizedBox(
-              width: _displayWidth * 0.84,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Get.find<UserController>().getProfileWidget(Get.find<UserController>().user, _displayWidth, 0.061),
-                  SizedBox(width: _displayWidth * 0.03),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(question.author, style: questionAnswerPerson),
-                          SizedBox(width: 2),
-                          Text(question.date, style: questionAnswerDate),
-                        ],
-                      ),
-                      SizedBox(height: 8),
-                      Text("메롱이다 메롱", style: questionAnswerContent)
-                    ],
-                  )
-                ],
-              ),
-            ),
+            SizedBox(height: _displayHeight * (question.questionStatus == QuestionStatus.answered ? 0.02 : 0)),
+            (question.questionStatus == QuestionStatus.answered ?
+              SizedBox(
+                width: _displayWidth * 0.84,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Get.find<UserController>().getProfileWidget(Get.find<UserController>().user, _displayWidth, 0.061),
+                    SizedBox(width: _displayWidth * 0.03),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(question.author, style: questionAnswerPerson),
+                            SizedBox(width: 2),
+                            Text(question.date, style: questionAnswerDate),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        Text("메롱이다 메롱", style: questionAnswerContent)
+                      ],
+                    )
+                  ],
+                ),
+            ) : SizedBox()
+      )
           ],
         ),
       ),
     );
+
+    List<Widget> optionButton = [
+      SmallActionButton(buttonType: SmallActionButtonType.remove, clickAction: () => print("지우기")),
+    ];
+
+    if (question.questionStatus == QuestionStatus.answered) {
+      optionButton.insertAll(0, [
+        SmallActionButton(buttonType: SmallActionButtonType.like, clickAction: () => print("좋아요")),
+        SmallActionButton(buttonType: SmallActionButtonType.modify, clickAction: () => print("수정")),
+      ]);
+    } else {
+      optionButton.insert(0, SmallActionButton(buttonType: SmallActionButtonType.answer, clickAction: () => Get.to(QuestionAnswer(question: question))));
+    }
 
     return Container(
       width: _displayWidth * 0.85,
@@ -112,14 +129,10 @@ class PersonalQuestionBox extends StatelessWidget {
           SizedBox(height: _displayHeight * 0.025),
           Center(
             child: SizedBox(
-              width: _displayWidth * 0.75,
+              width: _displayWidth * (optionButton.length == 3 ? 0.75 : 0.55),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SmallActionButton(buttonType: SmallActionButtonType.like, clickAction: () => print("좋아요")),
-                  SmallActionButton(buttonType: SmallActionButtonType.modify, clickAction: () => print("수정")),
-                  SmallActionButton(buttonType: SmallActionButtonType.remove, clickAction: () => print("지우기")),
-                ],
+                children: optionButton,
               ),
             ),
           )

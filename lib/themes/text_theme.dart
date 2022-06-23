@@ -52,6 +52,18 @@ final communityQuestionContent = TextStyle(
 final communityQuestionPerson = TextStyle(
     fontSize: 12, color: grayOne, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 
+
+final questionAnswerPageAuthor = TextStyle(
+    fontSize: 14, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
+final questionAnswerPageDate = TextStyle(
+    fontSize: 12, color: grayOne, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
+final questionAnswerPageContent = TextStyle(
+    fontSize: 16, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
+final questionAnswerPageHelpMsg = TextStyle(
+    fontSize: 12, color: grayOne, fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
+final questionAnswerPageTextField = TextStyle(
+    fontSize: 16, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
+
 final reportOptionDialogTitle = TextStyle(
     fontSize: 20, color: Colors.white, fontFamily: 'Pretendard', fontWeight: FontWeight.w600);
 final reportOptionDialogOption = TextStyle(

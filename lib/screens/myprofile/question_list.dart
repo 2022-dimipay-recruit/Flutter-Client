@@ -4,6 +4,7 @@ import 'package:flutter_recruit_asked/controllers/user_controller.dart';
 import 'package:get/get.dart';
 
 import '../../controllers/mainscreen_controller.dart';
+import '../../controllers/question_controller.dart';
 import '../../models/question.dart';
 import '../../themes/color_theme.dart';
 import '../../themes/text_theme.dart';
