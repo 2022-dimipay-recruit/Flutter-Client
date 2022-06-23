@@ -35,8 +35,11 @@ extension QuestionPublicModeExtension on QuestionPublicMode {
 
 class QuestionController extends GetxController {
   RxString questionMode = "".obs;
+  RxString commentMode = "".obs;
   TextEditingController titleTextController = TextEditingController();
   TextEditingController contentTextController = TextEditingController();
+  TextEditingController answerTextController = TextEditingController();
+  TextEditingController commentTextController = TextEditingController();
 
   SharedPreference _sharedPreference = SharedPreference();
 

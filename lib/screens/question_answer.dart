@@ -91,7 +91,7 @@ class QuestionAnswer extends GetWidget<QuestionController> {
                           child: TextField(
                             minLines: 1,
                             maxLines: null,
-                            controller: controller.titleTextController,
+                            controller: controller.answerTextController,
                             keyboardType: TextInputType.text,
                             style: questionAnswerPageTextField,
                             decoration: InputDecoration(

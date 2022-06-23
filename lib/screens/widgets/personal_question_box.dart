@@ -100,7 +100,7 @@ class PersonalQuestionBox extends StatelessWidget {
         SmallActionButton(buttonType: SmallActionButtonType.modify, clickAction: () => print("수정")),
       ]);
     } else {
-      optionButton.insert(0, SmallActionButton(buttonType: SmallActionButtonType.answer, clickAction: () => Get.to(QuestionAnswer(question: question))));
+      optionButton.insert(0, SmallActionButton(buttonType: SmallActionButtonType.answer, clickAction: () => Get.to(QuestionAnswer(question: question), transition: Transition.rightToLeft)));
     }
 
     return Container(

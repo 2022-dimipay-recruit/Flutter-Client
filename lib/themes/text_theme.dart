@@ -52,6 +52,8 @@ final communityQuestionContent = TextStyle(
 final communityQuestionPerson = TextStyle(
     fontSize: 12, color: grayOne, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 
+final communityCommentTextField = TextStyle(
+    fontSize: 18, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 
 final questionAnswerPageAuthor = TextStyle(
     fontSize: 14, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);

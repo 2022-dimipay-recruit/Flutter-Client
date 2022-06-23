@@ -1,12 +1,14 @@
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_recruit_asked/models/user.dart';
+import 'package:flutter_recruit_asked/screens/community_comment.dart';
 import 'package:flutter_recruit_asked/screens/widgets/questionbox_moreaction_dialog.dart';
 import 'package:flutter_recruit_asked/screens/widgets/small_action_button.dart';
 import 'package:flutter_recruit_asked/themes/color_theme.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../../controllers/question_controller.dart';
 import '../../controllers/user_controller.dart';
 import '../../models/question.dart';
 import '../../themes/text_theme.dart';
@@ -86,6 +88,15 @@ class CommunityQuestionBox extends StatelessWidget {
       ),
     );
 
+    List<Widget> optionButton = [
+      SmallActionButton(buttonType: SmallActionButtonType.like, clickAction: () => print("좋아요")),
+      SmallActionButton(buttonType: SmallActionButtonType.comment, clickAction: () => Get.to(CommunityComment(question: question), transition: Transition.rightToLeft)),
+    ];
+
+    if (question.author == Get.find<UserController>().user.name) {
+      optionButton.add(SmallActionButton(buttonType: SmallActionButtonType.remove, clickAction: () => print("지우기")));
+    }
+
     return Container(
       width: _displayWidth * 0.85,
       margin: EdgeInsets.only(bottom: _displayHeight * 0.05),
@@ -112,14 +123,10 @@ class CommunityQuestionBox extends StatelessWidget {
           SizedBox(height: _displayHeight * 0.025),
           Center(
             child: SizedBox(
-              width: _displayWidth * 0.75,
+              width: _displayWidth * (optionButton.length == 3 ? 0.75 : 0.55),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SmallActionButton(buttonType: SmallActionButtonType.like, clickAction: () => print("좋아요")),
-                  SmallActionButton(buttonType: SmallActionButtonType.comment, clickAction: () => print("댓글달기")),
-                  SmallActionButton(buttonType: SmallActionButtonType.remove, clickAction: () => print("지우기")),
-                ],
+                children: optionButton
               ),
             ),
           )
