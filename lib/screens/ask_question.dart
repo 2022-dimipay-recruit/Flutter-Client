@@ -61,7 +61,7 @@ class AskQuestion extends GetWidget<QuestionController> {
                   children: [
                     Row(
                       children: [
-                        Get.find<UserController>().getProfileWidget(_width, 0.061),
+                        Get.find<UserController>().getProfileWidget(Get.find<UserController>().user, _width, 0.061),
                         SizedBox(width: 12),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

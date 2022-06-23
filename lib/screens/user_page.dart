@@ -6,19 +6,19 @@ import 'package:flutter_recruit_asked/screens/widgets/custom_tabbar.dart';
 import 'package:flutter_recruit_asked/screens/widgets/personal_question_box.dart';
 import 'package:flutter_recruit_asked/screens/widgets/profile_widget.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_button.dart';
-import 'package:flutter_recruit_asked/screens/widgets/questionbox_moreaction_dialog.dart';
-import 'package:flutter_recruit_asked/screens/widgets/small_action_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/sort_button.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 import '../models/question.dart';
+import '../models/user.dart';
 import '../themes/color_theme.dart';
 import '../themes/text_theme.dart';
 import 'ask_question.dart';
 
-class Home extends StatelessWidget {
-  Home({Key? key}) : super(key: key);
+class UserPage extends StatelessWidget {
+  UserModel user;
+  UserPage({required this.user});
 
   late double _height, _width;
 
@@ -26,9 +26,6 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
-
-    UserController _userController = Get.find<UserController>();
-
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -60,7 +57,7 @@ class Home extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ProfileWidget(user: _userController.user, showShareBtn: true),
+                        ProfileWidget(user: user, showShareBtn: true),
                         Column(
                           children: [
                             GestureDetector(

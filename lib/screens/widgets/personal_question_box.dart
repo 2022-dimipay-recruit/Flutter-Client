@@ -61,7 +61,7 @@ class PersonalQuestionBox extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Get.find<UserController>().getProfileWidget(_displayWidth, 0.061),
+                  Get.find<UserController>().getProfileWidget(Get.find<UserController>().user, _displayWidth, 0.061),
                   SizedBox(width: _displayWidth * 0.03),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

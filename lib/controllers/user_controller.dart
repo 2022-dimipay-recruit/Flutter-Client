@@ -40,7 +40,7 @@ class UserController extends GetxController {
     _userModel.value = UserModel();
   }
 
-  dynamic getProfileWidget(double _width, double radiusRatio) {
+  dynamic getProfileWidget(UserModel user, double _width, double radiusRatio) {
     dynamic imageWidget;
     if (user.profileImg == null || user.profileImg == "") {
       imageWidget = Container(

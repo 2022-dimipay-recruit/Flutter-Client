@@ -4,6 +4,7 @@ import 'package:flutter_recruit_asked/themes/color_theme.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../screens/user_search.dart';
 import '../themes/text_theme.dart';
 
 class MainScreen extends GetWidget<MainScreenController> {
@@ -56,8 +57,12 @@ class MainScreen extends GetWidget<MainScreenController> {
           selectedFontSize: 12,
           currentIndex: controller.selectNavigationBarIndex.value,
           onTap: (int index) {
-            controller.selectNavigationBarIndex.value = index;
-            controller.nowShowWindow.value = [controller.bottomNavigationBarPages[controller.selectNavigationBarIndex.value]];
+            if(index != 2) {
+              controller.selectNavigationBarIndex.value = index;
+              controller.nowShowWindow.value = [controller.bottomNavigationBarPages[controller.selectNavigationBarIndex.value]];
+            } else { //검색탭일경우 실행
+              showSearch(context: context, delegate: UserSearch());
+            }
           },
           items: bottomNavigatorItem,
         ),
