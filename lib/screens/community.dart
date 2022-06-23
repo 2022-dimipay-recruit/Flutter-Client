@@ -67,7 +67,9 @@ class Community extends StatelessWidget {
                           ],
                         ),
                         PurpleButton(
-                          text: "질문하기", clickAction: () => Get.to(AskQuestion(askQuestionMode: AskQuestionMode.personal), transition: Transition.rightToLeft),
+                          buttonMode: PurpleButtonMode.regular,
+                          text: "질문하기",
+                          clickAction: () => Get.to(AskQuestion(askQuestionMode: AskQuestionMode.personal), transition: Transition.rightToLeft),
                         )
                       ],
                     ),

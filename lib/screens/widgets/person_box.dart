@@ -48,7 +48,7 @@ class PersonBox extends StatelessWidget {
           ),
           (
             boxType == PersonBoxType.following ?
-            PurpleButton(text: "팔로잉", clickAction: () => print("CLick"))
+            PurpleButton(buttonMode: PurpleButtonMode.regular, text: "팔로잉", clickAction: () => print("CLick"))
             : SizedBox()
           )
         ],

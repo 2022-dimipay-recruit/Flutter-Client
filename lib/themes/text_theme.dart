@@ -9,6 +9,11 @@ const loginSubTitle = TextStyle(
 const loginBtn = TextStyle(
     fontSize: 12, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
 
+final userInfoTitle = TextStyle(
+    fontSize: 16, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w700);
+final userInfoTextField = TextStyle(
+    fontSize: 18, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
+
 final homeBottomNavigationBarLabel = TextStyle(
     fontSize: 12, fontFamily: 'Pretendard', fontWeight: FontWeight.w700);
 

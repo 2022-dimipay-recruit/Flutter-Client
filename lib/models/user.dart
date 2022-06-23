@@ -5,15 +5,12 @@ class UserModel {
   String? name;
   String? email;
   String? profileImg;
+  String? linkId;
+  String? description;
+  int? followers;
+  String? type;
 
-  UserModel({this.id, this.name, this.email, this.profileImg});
-
-  UserModel.fromDocumentSnapshot({required DocumentSnapshot documentSnapshot}) {
-    id = documentSnapshot.id;
-    name = documentSnapshot["name"];
-    email = documentSnapshot["email"];
-    profileImg = documentSnapshot["profileImg"];
-  }
+  UserModel({this.id, this.name, this.email, this.profileImg, this.linkId, this.description, this.followers, this.type});
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -21,6 +18,10 @@ class UserModel {
     map['name'] = name;
     map['email'] = email;
     map['profileImg'] = profileImg;
+    map['linkId'] = linkId;
+    map['description'] = description;
+    map['followers'] = followers;
+    map['type'] = type;
 
     return map;
   }

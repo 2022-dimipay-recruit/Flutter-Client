@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_recruit_asked/screens/auth/register_userinfo.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao_flutter_lib;
 
 import '../models/user.dart';
-import '../services/firestore_database.dart';
 import '../controllers/user_controller.dart';
 
 class AuthController extends GetxController {
@@ -18,6 +18,9 @@ class AuthController extends GetxController {
   User? get user => _firebaseUser.value;
   Map loginUserInfo = {}; //userID, email, name, profileImgUrl
   RxString selectGroupName = "init".obs;
+
+  TextEditingController nicknameTextController = TextEditingController();
+  TextEditingController idTextController = TextEditingController();
 
   RxBool isLogin = false.obs;
 
@@ -29,8 +32,8 @@ class AuthController extends GetxController {
     _firebaseUser.bindStream(authInstance.authStateChanges());
     _firebaseUser.value = authInstance.currentUser;
     if (user != null) {
-      Get.find<UserController>().user =
-          await FirestoreDatabase().getUser(user!.uid);
+      //Get.find<UserController>().user = await FirestoreDatabase().getUser(user!.uid);
+      //TODO 백엔드에서 유저 불러오는 코드 추가
     }
   }
 
@@ -50,13 +53,18 @@ class AuthController extends GetxController {
     UserCredential _authResult =
         await FirebaseAuth.instance.signInWithCredential(credential);
 
+    loginUserInfo["type"] = "G";
     loginUserInfo["userid"] = _authResult.user?.uid;
     loginUserInfo["email"] = googleUser?.email;
     loginUserInfo["name"] = googleUser?.displayName;
     loginUserInfo["profileImgUrl"] = googleUser?.photoUrl;
 
-    writeAccountInfo();
-    isLogin.value = true;
+    if (_authResult.additionalUserInfo!.isNewUser) {
+      Get.to(RegisterUserInfo());
+    } else {
+      writeAccountInfo();
+      isLogin.value = true;
+    }
   }
 
   void signInWithKakao() async {
@@ -69,11 +77,11 @@ class AuthController extends GetxController {
       kakao_flutter_lib.User user =
           await kakao_flutter_lib.UserApi.instance.me();
 
+      loginUserInfo["type"] = "K";
       loginUserInfo["userid"] = "kakao:${user.id}";
       loginUserInfo["email"] = user.kakaoAccount!.email;
       loginUserInfo["name"] = user.kakaoAccount!.profile!.nickname;
-      loginUserInfo["profileImgUrl"] =
-          user.kakaoAccount!.profile!.profileImageUrl;
+      loginUserInfo["profileImgUrl"] = user.kakaoAccount!.profile!.profileImageUrl;
 
       late Response response;
       try {
@@ -90,11 +98,15 @@ class AuthController extends GetxController {
             fontSize: 13.0);
       }
 
-      await FirebaseAuth.instance
+      UserCredential _authResult = await FirebaseAuth.instance
           .signInWithCustomToken(response.data['data']['token']);
 
-      writeAccountInfo();
-      isLogin.value = true;
+      if (user.hasSignedUp!) {
+        writeAccountInfo();
+        isLogin.value = true;
+      } else {
+        Get.to(RegisterUserInfo());
+      }
     } catch (e) {
       if (e.toString().contains("User canceled login.")) {
         Fluttertoast.showToast(
@@ -142,19 +154,9 @@ class AuthController extends GetxController {
       email: loginUserInfo["email"],
       name: loginUserInfo["name"],
       profileImg: loginUserInfo["profileImgUrl"],
+      linkId: loginUserInfo['linkId'],
+      type: loginUserInfo['type']
     );
-
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(loginUserInfo["userid"])
-        .get()
-        .then((doc) async {
-      if (doc.exists) {
-        print("User info is already exist");
-      } else {
-        await FirestoreDatabase().createNewUser(_user);
-      }
-    });
 
     Get.find<UserController>().user = _user;
   }

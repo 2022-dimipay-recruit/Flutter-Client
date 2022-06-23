@@ -129,6 +129,7 @@ class QuestionBoxMoreActionDialog extends StatelessWidget {
                   ),
                   SizedBox(height: _displayHeight * 0.01),
                   PurpleButton(
+                    buttonMode: PurpleButtonMode.regular,
                     text: "신고하기",
                     clickAction: () {
                       Get.back();
