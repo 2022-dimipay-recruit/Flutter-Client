@@ -53,6 +53,7 @@ class AuthController extends GetxController {
     UserCredential _authResult =
         await FirebaseAuth.instance.signInWithCredential(credential);
 
+    loginUserInfo["type"] = "G";
     loginUserInfo["userid"] = _authResult.user?.uid;
     loginUserInfo["email"] = googleUser?.email;
     loginUserInfo["name"] = googleUser?.displayName;
@@ -76,6 +77,7 @@ class AuthController extends GetxController {
       kakao_flutter_lib.User user =
           await kakao_flutter_lib.UserApi.instance.me();
 
+      loginUserInfo["type"] = "K";
       loginUserInfo["userid"] = "kakao:${user.id}";
       loginUserInfo["email"] = user.kakaoAccount!.email;
       loginUserInfo["name"] = user.kakaoAccount!.profile!.nickname;
@@ -99,11 +101,11 @@ class AuthController extends GetxController {
       UserCredential _authResult = await FirebaseAuth.instance
           .signInWithCustomToken(response.data['data']['token']);
 
-      if (_authResult.additionalUserInfo!.isNewUser) {
-        Get.to(RegisterUserInfo());
-      } else {
+      if (user.hasSignedUp!) {
         writeAccountInfo();
         isLogin.value = true;
+      } else {
+        Get.to(RegisterUserInfo());
       }
     } catch (e) {
       if (e.toString().contains("User canceled login.")) {
@@ -153,6 +155,7 @@ class AuthController extends GetxController {
       name: loginUserInfo["name"],
       profileImg: loginUserInfo["profileImgUrl"],
       linkId: loginUserInfo['linkId'],
+      type: loginUserInfo['type']
     );
 
     Get.find<UserController>().user = _user;
