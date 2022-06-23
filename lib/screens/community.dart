@@ -58,7 +58,7 @@ class Community extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Get.find<UserController>().getProfileWidget(_width, 0.061),
+                            Get.find<UserController>().getProfileWidget(Get.find<UserController>().user, _width, 0.061),
                             SizedBox(width: _width * 0.03),
                             GestureDetector(
                               onTap: () => Get.to(AskQuestion(askQuestionMode: AskQuestionMode.personal), transition: Transition.rightToLeft),

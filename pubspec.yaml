@@ -40,6 +40,8 @@ dependencies:
   cloud_firestore: ^2.5.4
 
   image_picker: ^0.8.5+3
+  korea_regexp: ^0.1.0+1
+  shared_preferences: ^2.0.15
 
   fluttertoast: ^8.0.9
   flutter_svg: ^0.23.0+1

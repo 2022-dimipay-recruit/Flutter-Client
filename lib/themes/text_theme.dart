@@ -66,6 +66,19 @@ final askQuestionAuthor = TextStyle(
 final askQuestionContent = TextStyle(
     fontSize: 18, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
 
+final searchFieldLabelStyle = TextStyle(
+    fontSize: 18, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
+final searchLatestSearchTitle = TextStyle(
+    fontSize: 18, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w700);
+final searchLatestSearchAllRemove = TextStyle(
+    fontSize: 14, color: grayTwo, fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
+final searchLatestSearchUserId = TextStyle(
+    fontSize: 16, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
+final searchUserBoxTitle = TextStyle(
+    fontSize: 16, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
+final searchUserBoxSubTitle = TextStyle(
+    fontSize: 14, color: Colors.black, fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
+
 final changeProfileSaveBtn = TextStyle(
     fontSize: 18, color: purpleOne, fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 final changeProfileChangeProfileImg = TextStyle(

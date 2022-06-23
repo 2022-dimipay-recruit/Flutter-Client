@@ -33,7 +33,7 @@ class PersonBox extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Get.find<UserController>().getProfileWidget(_displayWidth, 0.07),
+              Get.find<UserController>().getProfileWidget(Get.find<UserController>().user, _displayWidth, 0.07),
               SizedBox(width: 8),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/auth_controller.dart';
-import '../screens/home.dart';
+import '../screens/user_page.dart';
 import '../screens/auth/login.dart';
 import 'main_screen.dart';
 

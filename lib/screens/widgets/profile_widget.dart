@@ -22,7 +22,7 @@ class ProfileWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Get.find<UserController>().getProfileWidget(_displayWidth, 0.105),
+        Get.find<UserController>().getProfileWidget(Get.find<UserController>().user, _displayWidth, 0.105),
         SizedBox(width: _displayWidth * 0.05),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
