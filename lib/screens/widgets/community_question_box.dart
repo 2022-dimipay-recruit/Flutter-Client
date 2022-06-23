@@ -1,7 +1,7 @@
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_recruit_asked/models/user.dart';
-import 'package:flutter_recruit_asked/screens/question_answer.dart';
+import 'package:flutter_recruit_asked/screens/community_comment.dart';
 import 'package:flutter_recruit_asked/screens/widgets/questionbox_moreaction_dialog.dart';
 import 'package:flutter_recruit_asked/screens/widgets/small_action_button.dart';
 import 'package:flutter_recruit_asked/themes/color_theme.dart';
@@ -13,10 +13,10 @@ import '../../controllers/user_controller.dart';
 import '../../models/question.dart';
 import '../../themes/text_theme.dart';
 
-class PersonalQuestionBox extends StatelessWidget {
+class CommunityQuestionBox extends StatelessWidget {
   final QuestionModel question;
   final int index;
-  PersonalQuestionBox({required this.question, required this.index});
+  CommunityQuestionBox({required this.question, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +30,9 @@ class PersonalQuestionBox extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Stack(
               children: [
+                SizedBox(width: _displayWidth, height: _displayHeight * 0.05),
                 Container(
                   width: 20,
                   height: 20,
@@ -45,67 +44,62 @@ class PersonalQuestionBox extends StatelessWidget {
                     child: Text("Q", style: questionCircleIcon),
                   ),
                 ),
-                SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(question.publicMode.convertStr, style: questionType),
-                    SizedBox(height: 4),
-                    Text(question.content, style: questionContent),
-                  ],
-                )
+                Positioned(
+                  top: -2.5,
+                  child: SizedBox(
+                      width: _displayWidth * 0.8,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: RichText(
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              strutStyle: StrutStyle(fontSize: 16.0),
+                              text: TextSpan(
+                                text: (' ' * 7) + '디미고인 여러분 안녕하세요! 본 텍스트는 커뮤니티 UI 질문 위젯의 정상적인 작동을 테스트하기 위한 질문입니다.',
+                                style: communityQuestionContent,
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                  ),
+                ),
               ],
             ),
-            SizedBox(height: _displayHeight * (question.questionStatus == QuestionStatus.answered ? 0.02 : 0)),
-            (question.questionStatus == QuestionStatus.answered ?
-              SizedBox(
-                width: _displayWidth * 0.84,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Get.find<UserController>().getProfileWidget(Get.find<UserController>().user, _displayWidth, 0.061),
-                    SizedBox(width: _displayWidth * 0.03),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(question.author, style: questionAnswerPerson),
-                            SizedBox(width: 2),
-                            Text(question.date, style: questionAnswerDate),
-                          ],
-                        ),
-                        SizedBox(height: 8),
-                        Text("메롱이다 메롱", style: questionAnswerContent)
-                      ],
-                    )
-                  ],
-                ),
-            ) : SizedBox()
-      )
+            SizedBox(height: _displayHeight * 0.02),
+            SizedBox(
+              width: _displayWidth * 0.84,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text("윤지", style: communityQuestionPerson),
+                  SizedBox(width: 2),
+                  Icon(Icons.circle, size: 2),
+                  SizedBox(width: 2),
+                  Text("2주 전", style: questionAnswerDate),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
 
     List<Widget> optionButton = [
-      SmallActionButton(buttonType: SmallActionButtonType.remove, clickAction: () => print("지우기")),
+      SmallActionButton(buttonType: SmallActionButtonType.like, clickAction: () => print("좋아요")),
+      SmallActionButton(buttonType: SmallActionButtonType.comment, clickAction: () => Get.to(CommunityComment(question: question), transition: Transition.rightToLeft)),
     ];
 
-    if (question.questionStatus == QuestionStatus.answered) {
-      optionButton.insertAll(0, [
-        SmallActionButton(buttonType: SmallActionButtonType.like, clickAction: () => print("좋아요")),
-        SmallActionButton(buttonType: SmallActionButtonType.modify, clickAction: () => print("수정")),
-      ]);
-    } else {
-      optionButton.insert(0, SmallActionButton(buttonType: SmallActionButtonType.answer, clickAction: () => Get.to(QuestionAnswer(question: question), transition: Transition.rightToLeft)));
+    if (question.author == Get.find<UserController>().user.name) {
+      optionButton.add(SmallActionButton(buttonType: SmallActionButtonType.remove, clickAction: () => print("지우기")));
     }
 
     return Container(
       width: _displayWidth * 0.85,
-      margin: EdgeInsets.only(bottom: _displayHeight * 0.0425),
+      margin: EdgeInsets.only(bottom: _displayHeight * 0.05),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,7 +126,7 @@ class PersonalQuestionBox extends StatelessWidget {
               width: _displayWidth * (optionButton.length == 3 ? 0.75 : 0.55),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: optionButton,
+                children: optionButton
               ),
             ),
           )

@@ -15,14 +15,9 @@ import '../controllers/question_controller.dart';
 import '../themes/color_theme.dart';
 import '../themes/text_theme.dart';
 
-enum AskQuestionMode {
-  personal,
-  community
-}
-
 class AskQuestion extends GetWidget<QuestionController> {
-  late AskQuestionMode askQuestionMode;
-  AskQuestion({required this.askQuestionMode});
+  late QuestionType questionType;
+  AskQuestion({required this.questionType});
 
   late double _height, _width;
 

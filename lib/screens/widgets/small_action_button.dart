@@ -8,7 +8,8 @@ enum SmallActionButtonType {
   like,
   modify,
   remove,
-  comment
+  comment,
+  answer
 }
 
 extension SmallActionButtonTypeExtension on SmallActionButtonType {
@@ -18,6 +19,7 @@ extension SmallActionButtonTypeExtension on SmallActionButtonType {
       case SmallActionButtonType.modify: return "pencil";
       case SmallActionButtonType.remove: return "recycleBin";
       case SmallActionButtonType.comment: return "write_text";
+      case SmallActionButtonType.answer: return "pencil";
       default: return "";
     }
   }
@@ -28,6 +30,7 @@ extension SmallActionButtonTypeExtension on SmallActionButtonType {
       case SmallActionButtonType.modify: return "수정";
       case SmallActionButtonType.remove: return "삭제";
       case SmallActionButtonType.comment: return "댓글";
+      case SmallActionButtonType.answer: return "답변";
       default: return "";
     }
   }

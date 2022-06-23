@@ -10,11 +10,12 @@ import 'package:flutter_recruit_asked/screens/widgets/sort_button.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../controllers/question_controller.dart';
 import '../models/question.dart';
 import '../models/user.dart';
 import '../themes/color_theme.dart';
 import '../themes/text_theme.dart';
-import 'ask_question.dart';
+import 'question_ask.dart';
 
 class UserPage extends StatelessWidget {
   UserModel user;
@@ -76,7 +77,7 @@ class UserPage extends StatelessWidget {
                             PurpleButton(
                               buttonMode: PurpleButtonMode.regular,
                               text: "질문하기",
-                              clickAction: () => Get.to(AskQuestion(askQuestionMode: AskQuestionMode.personal), transition: Transition.rightToLeft),
+                              clickAction: () => Get.to(AskQuestion(questionType: QuestionType.personal), transition: Transition.rightToLeft),
                             ),
                           ],
                         )
@@ -124,7 +125,15 @@ class UserPage extends StatelessWidget {
                       physics: BouncingScrollPhysics(),
                       itemCount: 10,
                       itemBuilder: (context, index) {
-                        return PersonalQuestionBox(question: QuestionModel(questionType: QuestionType.personal, publicMode: QuestionPublicMode.anonymous, content: "하이 반가워", author: "윤지", date: "2주 전"), index: index);
+                        return PersonalQuestionBox(
+                            question: QuestionModel(
+                                questionType: QuestionType.personal,
+                                publicMode: QuestionPublicMode.anonymous,
+                                questionStatus: title.contains("답변") ? QuestionStatus.answered : QuestionStatus.newQuestion,
+                                content: "하이 반가워",
+                                author: "윤지",
+                                date: "2주 전"
+                            ), index: index);
                       }
                   ),
                 ),
