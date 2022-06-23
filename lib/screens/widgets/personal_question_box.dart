@@ -61,13 +61,7 @@ class PersonalQuestionBox extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CircularProfileAvatar(
-                    '',
-                    child: Get.find<UserController>().getProfileImg(_displayWidth),
-                    radius: _displayWidth * 0.061,
-                    backgroundColor: Colors.transparent,
-                    cacheImage: true,
-                  ),
+                  Get.find<UserController>().getProfileWidget(_displayWidth, 0.061),
                   SizedBox(width: _displayWidth * 0.03),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

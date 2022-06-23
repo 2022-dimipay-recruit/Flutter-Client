@@ -33,13 +33,7 @@ class PersonBox extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              CircularProfileAvatar(
-                '',
-                child: Get.find<UserController>().getProfileImg(_displayWidth),
-                radius: _displayWidth * 0.07,
-                backgroundColor: Colors.transparent,
-                cacheImage: true,
-              ),
+              Get.find<UserController>().getProfileWidget(_displayWidth, 0.07),
               SizedBox(width: 8),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -22,13 +22,7 @@ class ProfileWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CircularProfileAvatar(
-          '',
-          child: Get.find<UserController>().getProfileImg(_displayWidth),
-          radius: _displayWidth * 0.105,
-          backgroundColor: Colors.transparent,
-          cacheImage: true,
-        ),
+        Get.find<UserController>().getProfileWidget(_displayWidth, 0.105),
         SizedBox(width: _displayWidth * 0.05),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,

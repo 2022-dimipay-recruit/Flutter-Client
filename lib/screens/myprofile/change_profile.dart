@@ -46,13 +46,7 @@ class ChangeProfile extends GetWidget<UserController> {
             SizedBox(height: _height * 0.0075),
             Divider(color: grayFive, thickness: 1),
             SizedBox(height: _height * 0.04),
-            CircularProfileAvatar(
-              '',
-              child: controller.getProfileImg(_width),
-              radius: _width * 0.123,
-              backgroundColor: Colors.transparent,
-              cacheImage: true,
-            ),
+            Get.find<UserController>().getProfileWidget(_width, 0.123),
             SizedBox(height: _height * 0.02),
             GestureDetector(
               onTap: () => controller.changeProfileImg(),
