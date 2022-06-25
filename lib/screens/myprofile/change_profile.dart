@@ -4,6 +4,7 @@ import 'package:flutter_recruit_asked/controllers/user_controller.dart';
 import 'package:flutter_recruit_asked/screens/widgets/detail_list_button.dart';
 import 'package:get/get.dart';
 
+import '../../models/user.dart';
 import '../../themes/color_theme.dart';
 import '../../themes/text_theme.dart';
 import 'change_profile_input_text.dart';
@@ -19,7 +20,7 @@ class ChangeProfile extends GetWidget<UserController> {
     _width = MediaQuery.of(context).size.width;
 
     controller.nicknameTextController.text = controller.user.name!;
-    controller.descriptionTextController.text = "징징되는 윤징징 핸드폰은 무음모드 깔깔";
+    controller.descriptionTextController.text = controller.user.description!;
 
 
     return Scaffold(
@@ -39,14 +40,24 @@ class ChangeProfile extends GetWidget<UserController> {
                 ),
                 Positioned(
                   right: _width * 0.075,
-                  child: GestureDetector(onTap: () => Get.back(), child: Text("저장", style: changeProfileSaveBtn)),
+                  child: GestureDetector(onTap: () => controller.updateProfileInfo(), child: Text("저장", style: changeProfileSaveBtn)),
                 )
               ],
             ),
             SizedBox(height: _height * 0.0075),
             Divider(color: grayFive, thickness: 1),
             SizedBox(height: _height * 0.04),
-            Get.find<UserController>().getProfileWidget(Get.find<UserController>().user, _width, 0.123),
+            Obx(() {
+              getUserInChangeProfilePage() {
+                Map modifyInfo = controller.userModel.value.toJson();
+                modifyInfo['profileImage'] = controller.profileImageUrl.value;
+                Rx<UserModel> modifyUser = UserModel.fromJson(modifyInfo).obs;
+
+                return controller.profileImageUrl.value == "" ? controller.user : modifyUser.value;
+              }
+
+              return Get.find<UserController>().getProfileWidget(getUserInChangeProfilePage(), _width, 0.123);
+            }),
             SizedBox(height: _height * 0.02),
             GestureDetector(
               onTap: () => controller.changeProfileImg(),
@@ -55,13 +66,13 @@ class ChangeProfile extends GetWidget<UserController> {
             SizedBox(height: _height * 0.04),
             DetailListButton(
                 title: "아이디",
-                content: controller.user.id!,
+                content: controller.user.linkId!,
                 btnType: DetailListButtonType.gray,
                 canClick: false,
             ),
             DetailListButton(
               title: "내 주소",
-              content: "asked.kr/${controller.user.id!}",
+              content: "asked.kr/${controller.user.linkId!}",
               btnType: DetailListButtonType.gray,
               canClick: false,
             ),

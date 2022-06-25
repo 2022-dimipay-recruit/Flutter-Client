@@ -1,15 +1,18 @@
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_recruit_asked/services/api_provider.dart';
 import 'package:flutter_recruit_asked/themes/color_theme.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../models/user.dart';
 
-class UserController extends GetxController {
+class  UserController extends GetxController {
   final Rx<UserModel> _userModel = UserModel().obs;
   UserModel get user => _userModel.value;
+  Rx<UserModel> get userModel => _userModel;
 
   set user(UserModel value) => _userModel.value = value;
 
@@ -21,8 +24,10 @@ class UserController extends GetxController {
   RxInt changeTextLength = 0.obs;
   RxString nicknameChangeText = "".obs;
   RxString descriptionChangeText = "".obs;
+  RxString profileImageUrl = "".obs;
 
   ImagePicker _imagePicker = Get.find<ImagePicker>();
+  late ApiProvider _apiProvider;
 
   @override
   void onInit() {
@@ -32,6 +37,8 @@ class UserController extends GetxController {
     descriptionTextController.addListener(() {
       descriptionChangeText.value = descriptionTextController.text;
     });
+
+    Future.delayed(Duration(milliseconds: 500), () => _apiProvider = Get.find<ApiProvider>());
 
     super.onInit();
   }
@@ -65,10 +72,43 @@ class UserController extends GetxController {
     );
   }
 
-  changeProfileImg() async {
-    XFile? imageFile = await _imagePicker.pickImage(source: ImageSource.gallery);
+  followOtherUser(String uid) => _apiProvider.followOtherUser(uid);
 
-    //TODO 백엔드에 사진 업로드 코드
+  getFollowingUserList() async => (await _apiProvider.getFollowingUserList(user.id!))['content'];
+
+  changeProfileImg() async {
+    Map result = await _apiProvider.uploadImageFile(await _imagePicker.pickImage(source: ImageSource.gallery));
+    profileImageUrl.value = "${_apiProvider.apiUrl}/images/${result['content']['filename']}";
   }
 
+  updateProfileInfo() async {
+    Map modifyInfo = _userModel.value.toJson();
+    modifyInfo['nickname'] = nicknameTextController.text;
+    modifyInfo['description'] = descriptionTextController.text;
+    if (profileImageUrl.value != "") { modifyInfo['profileImage'] = profileImageUrl.value; }
+    UserModel modifyUser = UserModel.fromJson(modifyInfo);
+
+    Map result = await _apiProvider.updateUserProfile(modifyUser);
+    user = modifyUser;
+
+    if (result['success']) {
+      showToast("성공적으로 수정되었습니다,");
+      profileImageUrl.value = "";
+    } else {
+      showToast("오류가 발생하였습니다,");
+    }
+
+    Get.back();
+
+  }
+
+  showToast(String message) => Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Color(0xE6FFFFFF),
+      textColor: Colors.black,
+      fontSize: 13.0
+  );
 }

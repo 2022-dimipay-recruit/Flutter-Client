@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_recruit_asked/screens/auth/register_userinfo.dart';
+import 'package:flutter_recruit_asked/services/api_provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:google_sign_in/google_sign_in.dart';
@@ -16,15 +17,20 @@ class AuthController extends GetxController {
 
   final Rxn<User> _firebaseUser = Rxn<User>();
   User? get user => _firebaseUser.value;
-  Map loginUserInfo = {}; //userID, email, name, profileImgUrl
+  Map loginUserInfo = {};
   RxString selectGroupName = "init".obs;
 
   TextEditingController nicknameTextController = TextEditingController();
   TextEditingController idTextController = TextEditingController();
+  GlobalKey<FormState> nicknameFormKey = new GlobalKey<FormState>();
+  GlobalKey<FormState> idFormKey = new GlobalKey<FormState>();
+  final FocusNode nicknameFocus = new FocusNode();
+  final FocusNode idFocus = new FocusNode();
 
   RxBool isLogin = false.obs;
 
   final Dio _dio = Get.find<Dio>();
+  ApiProvider _apiProvider = Get.find<ApiProvider>();
 
   @override
   onInit() async {
@@ -62,7 +68,7 @@ class AuthController extends GetxController {
     if (_authResult.additionalUserInfo!.isNewUser) {
       Get.to(RegisterUserInfo());
     } else {
-      writeAccountInfo();
+      await _apiProvider.userLogin("google", loginUserInfo["userid"]);
       isLogin.value = true;
     }
   }
@@ -102,7 +108,7 @@ class AuthController extends GetxController {
           .signInWithCustomToken(response.data['data']['token']);
 
       if (user.hasSignedUp!) {
-        writeAccountInfo();
+        await _apiProvider.userLogin("kakao", loginUserInfo["userid"]);
         isLogin.value = true;
       } else {
         Get.to(RegisterUserInfo());
@@ -150,7 +156,7 @@ class AuthController extends GetxController {
 
   void writeAccountInfo() async {
     UserModel _user = UserModel(
-      id: loginUserInfo["userid"],
+      firebaseAuthId: loginUserInfo["userid"],
       email: loginUserInfo["email"],
       name: loginUserInfo["name"],
       profileImg: loginUserInfo["profileImgUrl"],
@@ -159,5 +165,7 @@ class AuthController extends GetxController {
     );
 
     Get.find<UserController>().user = _user;
+
+    Get.find<ApiProvider>().userSignUp(_user);
   }
 }

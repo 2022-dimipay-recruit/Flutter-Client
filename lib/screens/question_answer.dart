@@ -68,13 +68,13 @@ class QuestionAnswer extends GetWidget<QuestionController> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(question.author, style: questionAnswerPageAuthor),
+                                Text(question.author!, style: questionAnswerPageAuthor),
                                 SizedBox(width: 4),
-                                Text(question.date, style: questionAnswerPageDate)
+                                Text(question.date!, style: questionAnswerPageDate)
                               ],
                             ),
                             SizedBox(height: 4),
-                            Text(question.content, style: questionAnswerPageContent),
+                            Text(question.content!, style: questionAnswerPageContent),
                             SizedBox(height: 10),
                             Text("${question.author} 님 질문에 답변을 작성해주세요", style: questionAnswerPageHelpMsg)
                           ],

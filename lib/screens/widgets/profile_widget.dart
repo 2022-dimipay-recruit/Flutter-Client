@@ -32,7 +32,7 @@ class ProfileWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("유도히", style: profileNickname),
+                Text(user.name!, style: profileNickname),
                 SizedBox(width: _displayWidth * 0.0125),
                 (showShareBtn ?
                   Container(
@@ -54,9 +54,9 @@ class ProfileWidget extends StatelessWidget {
               ],
             ),
             SizedBox(height: 4),
-            Text("팔로워 213", style: profileFollwer),
+            Text("팔로워 ${user.followers!}", style: profileFollwer),
             SizedBox(height: 2),
-            Text("반가워요 여러분", style: profileIntroduce),
+            Text(user.description!, style: profileIntroduce),
           ],
         )
       ],

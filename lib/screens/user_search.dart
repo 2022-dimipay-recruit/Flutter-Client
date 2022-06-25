@@ -208,7 +208,7 @@ class UserSearch extends SearchDelegate {
 
   showUserWindow(UserModel user) {
     Get.find<MainScreenController>().selectNavigationBarIndex.value = 2;
-    Get.find<MainScreenController>().showWindow = UserPage(user: user);
+    Get.find<MainScreenController>().showWindow = UserPage(user: user, isMyPage: false);
     Get.back();
   }
 }

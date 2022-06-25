@@ -8,12 +8,12 @@ import '../screens/myprofile/my_profile.dart';
 
 class MainScreenController extends GetxController {
   RxInt selectNavigationBarIndex = 0.obs;
-  RxList<Widget> nowShowWindow = <Widget>[UserPage(user: Get.find<UserController>().user)].obs;
+  RxList<Widget> nowShowWindow = <Widget>[UserPage(user: Get.find<UserController>().user, isMyPage: true)].obs;
 
   set showWindow(Widget window) => nowShowWindow.value = [window];
 
   List bottomNavigationBarPages = [
-    UserPage(user: Get.find<UserController>().user),
+    UserPage(user: Get.find<UserController>().user, isMyPage: true),
     Community(),
     null,
     MyProfile()

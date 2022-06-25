@@ -1,6 +1,4 @@
-import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
 import 'package:flutter_recruit_asked/screens/widgets/custom_tabbar.dart';
 import 'package:flutter_recruit_asked/screens/widgets/personal_question_box.dart';
@@ -17,9 +15,10 @@ import '../themes/color_theme.dart';
 import '../themes/text_theme.dart';
 import 'question_ask.dart';
 
-class UserPage extends StatelessWidget {
+class UserPage extends GetWidget<UserController> {
   UserModel user;
-  UserPage({required this.user});
+  bool isMyPage;
+  UserPage({required this.user, required this.isMyPage});
 
   late double _height, _width;
 
@@ -32,71 +31,78 @@ class UserPage extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Center(
         child: SafeArea(
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      SizedBox(width: _width),
-                      Text("dohui_doch", style: appBarTitle),
-                      Positioned(
-                        right: _width * 0.075,
-                        child: SvgPicture.asset(
-                          "assets/images/icons/alert.svg",
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: _height * 0.0225),
-                  SizedBox(
-                    width: _width * 0.85,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Obx(() {
+            if (isMyPage) { user = controller.userModel.value; }
+
+            return Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Stack(
+                      alignment: Alignment.center,
                       children: [
-                        ProfileWidget(user: user, showShareBtn: true),
-                        Column(
-                          children: [
-                            GestureDetector(
-                              onTap: () => print("팔로우 버튼 클릭"),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.add_circle_outline_rounded, color: grayOne, size: 16),
-                                  SizedBox(width: 4),
-                                  Text("팔로우", style: profileFollowBtn)
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 12),
-                            PurpleButton(
-                              buttonMode: PurpleButtonMode.regular,
-                              text: "질문하기",
-                              clickAction: () => Get.to(AskQuestion(questionType: QuestionType.personal), transition: Transition.rightToLeft),
-                            ),
-                          ],
-                        )
+                        SizedBox(width: _width),
+                        Text(user.linkId!, style: appBarTitle),
+                        Positioned(
+                          right: _width * 0.075,
+                          child: SvgPicture.asset(
+                            "assets/images/icons/alert.svg",
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-              Positioned(
-                bottom: 0,
-                child: CustomTabBar(
-                    width: _width * 0.95,
-                    height: _height * 0.675,
-                    indicatorSizeMode: TabBarIndicatorSizeMode.text,
-                    tabWindowsList: questionTabView(["답변완료 160", "새질문 16", "거절질문 6"])
+                    SizedBox(height: _height * 0.0225),
+                    SizedBox(
+                      width: _width * 0.85,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ProfileWidget(user: user, showShareBtn: true),
+                          Column(
+                            children: [
+                              (
+                                !isMyPage ?
+                                GestureDetector(
+                                  onTap: () => controller.followOtherUser(user.id!),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.add_circle_outline_rounded, color: grayOne, size: 16),
+                                      SizedBox(width: 4),
+                                      Text("팔로우", style: profileFollowBtn)
+                                    ],
+                                  ),
+                                ) : SizedBox()
+                              ),
+                              SizedBox(height: 12),
+                              PurpleButton(
+                                buttonMode: PurpleButtonMode.regular,
+                                text: "질문하기",
+                                clickAction: () => Get.to(AskQuestion(questionType: QuestionType.personal), transition: Transition.rightToLeft),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              )
-            ],
-          )
+                Positioned(
+                  bottom: 0,
+                  child: CustomTabBar(
+                      width: _width * 0.95,
+                      height: _height * 0.675,
+                      indicatorSizeMode: TabBarIndicatorSizeMode.text,
+                      tabWindowsList: questionTabView(["답변완료 160", "새질문 16", "거절질문 6"])
+                  ),
+                )
+              ],
+            );
+          })
         )
       ),
     );

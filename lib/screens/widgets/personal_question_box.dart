@@ -49,9 +49,9 @@ class PersonalQuestionBox extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(question.publicMode.convertStr, style: questionType),
+                    Text(question.publicMode!.convertStr, style: questionType),
                     SizedBox(height: 4),
-                    Text(question.content, style: questionContent),
+                    Text(question.content!, style: questionContent),
                   ],
                 )
               ],
@@ -72,9 +72,9 @@ class PersonalQuestionBox extends StatelessWidget {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(question.author, style: questionAnswerPerson),
+                            Text(question.author!, style: questionAnswerPerson),
                             SizedBox(width: 2),
-                            Text(question.date, style: questionAnswerDate),
+                            Text(question.date!, style: questionAnswerDate),
                           ],
                         ),
                         SizedBox(height: 8),

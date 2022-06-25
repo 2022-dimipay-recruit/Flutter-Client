@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_recruit_asked/services/api_provider.dart';
 import 'package:get/get.dart';
 
 import '../controllers/auth_controller.dart';
@@ -12,6 +13,8 @@ class Root extends GetWidget<AuthController> {
   @override
   Widget build(BuildContext context) {
     if (controller.user?.uid != null) { controller.isLogin.value = true; }
+
+    Get.find<ApiProvider>().initUserInfo();
 
     return Obx(
       () {
