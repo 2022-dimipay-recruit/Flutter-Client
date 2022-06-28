@@ -69,6 +69,7 @@ class CommunityQuestionBox extends GetWidget<QuestionController> {
                 ),
               ],
             ),
+            SizedBox(height: 6),
             (question.imageLink!.isNotEmpty ?
             GestureDetector(
               onTap: () => showDialog(context: context, builder: (_) => Dialog(child: SizedBox(width: _displayWidth * 0.9, child: ExtendedImage.network(question.imageLink!)))),

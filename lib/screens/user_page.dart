@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_recruit_asked/controllers/mainscreen_controller.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
+import 'package:flutter_recruit_asked/screens/widgets/alert_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/custom_tabbar.dart';
 import 'package:flutter_recruit_asked/screens/widgets/follow_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/personal_question_box.dart';
@@ -53,9 +54,7 @@ class UserPage extends GetWidget<UserController> {
                         Text(user.value.linkId!, style: appBarTitle),
                         Positioned(
                           right: _width * 0.075,
-                          child: SvgPicture.asset(
-                            "assets/images/icons/alert.svg",
-                          ),
+                          child: AlertButton(),
                         ),
                       ],
                     ),
