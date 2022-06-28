@@ -36,7 +36,6 @@ class UserPage extends GetWidget<UserController> {
           child: Obx(() {
             Rx<UserModel> user = Get.find<MainScreenController>().userInUserPage;
             bool isMyPage = controller.user == UserModel() || (controller.user == user.value);
-            print(user.toJson());
 
             _questionController.getUserPersonalQuestionList(user.value.id!);
 

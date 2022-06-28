@@ -135,6 +135,20 @@ class ApiProvider {
     }
   }
 
+  isKakaoAccountAlreadySignUp(String uuid) async {
+    try {
+      Response authResponse = await _dio.post(
+        '$apiUrl/auth/login',
+        options: Options(contentType: "application/json"),
+        data: {"kakaoUid": uuid},
+      );
+
+      return true;
+    } on DioError catch (e) {
+      return false;
+    }
+  }
+
   getUserData(String uid, bool isMyData) async {
     try {
       Response infoResponse = await _dio.get(

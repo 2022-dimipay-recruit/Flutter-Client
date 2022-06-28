@@ -17,7 +17,6 @@ class ProfileWidget extends GetWidget<UserController> {
   Widget build(BuildContext context) {
     final double _displayHeight = MediaQuery.of(context).size.height;
     final double _displayWidth = MediaQuery.of(context).size.width;
-    print(user.value.name!);
 
     return Obx(() => Row(
       mainAxisAlignment: MainAxisAlignment.center,

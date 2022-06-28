@@ -68,7 +68,7 @@ class AuthController extends GetxController {
     if (_authResult.additionalUserInfo!.isNewUser) {
       Get.to(RegisterUserInfo());
     } else {
-      print(await _apiProvider.userLogin("google", loginUserInfo["userid"]));
+      await _apiProvider.userLogin("google", loginUserInfo["userid"]);
       isLogin.value = true;
     }
   }
@@ -89,6 +89,8 @@ class AuthController extends GetxController {
       loginUserInfo["name"] = user.kakaoAccount!.profile!.nickname;
       loginUserInfo["profileImgUrl"] = user.kakaoAccount!.profile!.profileImageUrl;
 
+      Get.find<UserController>().showToast("카카오 로그인 중입니다.\n카카오톡 연동에 시간이 걸리니 잠시만 기다려주세요.");
+
       late Response response;
       try {
         response = await _dio.post('https://dprc.tilto.kr/login/kakao',
@@ -107,7 +109,7 @@ class AuthController extends GetxController {
       UserCredential _authResult = await FirebaseAuth.instance
           .signInWithCustomToken(response.data['data']['token']);
 
-      if (user.hasSignedUp!) {
+      if (await _apiProvider.isKakaoAccountAlreadySignUp(loginUserInfo["userid"])) {
         await _apiProvider.userLogin("kakao", loginUserInfo["userid"]);
         isLogin.value = true;
       } else {
