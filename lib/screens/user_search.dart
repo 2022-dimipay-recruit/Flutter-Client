@@ -64,6 +64,7 @@ class UserSearch extends SearchDelegate {
     _width = MediaQuery.of(context).size.width;
 
     QuestionController _questionController = Get.find<QuestionController>();
+    MainScreenController _mainScreenController = Get.find<MainScreenController>();
 
     RxList<String> latestSearchList = _questionController.getLatestSearchList();
 
@@ -89,7 +90,7 @@ class UserSearch extends SearchDelegate {
                       latestSearchList.value = latestSearchList.value.toSet().toList();
                       _questionController.saveLatestSearchList(latestSearchList.value);
 
-                      showUserWindow(selectUser);
+                      _mainScreenController.showUserWindow(selectUser);
                     },
                     child: ListTile(
                       title: Text(selectUser.name!, style: searchUserBoxTitle),
@@ -143,7 +144,7 @@ class UserSearch extends SearchDelegate {
 
                                         _userList.forEach((element) {
                                           if (element.linkId! == latestSearchList[index]) {
-                                            showUserWindow(element);
+                                            _mainScreenController.showUserWindow(element);
                                             isFindUserInfo = true;
                                           }
                                         });
@@ -215,12 +216,5 @@ class UserSearch extends SearchDelegate {
 
 
     return result;
-  }
-
-  showUserWindow(UserModel user) {
-    Get.find<MainScreenController>().userInUserPage.value = user;
-    Get.find<MainScreenController>().selectNavigationBarIndex.value = 2;
-    Get.find<MainScreenController>().showWindow = UserPage();
-    Get.back();
   }
 }

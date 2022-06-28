@@ -21,4 +21,11 @@ class MainScreenController extends GetxController {
     null,
     MyProfile()
   ];
+
+  showUserWindow(UserModel user) {
+    userInUserPage.value = user;
+    selectNavigationBarIndex.value = 2;
+    showWindow = UserPage();
+    Get.back();
+  }
 }

@@ -228,7 +228,7 @@ class ApiProvider {
   unfollowOtherUser(String id) async {
     try {
       Response response = await _dio.delete(
-        "$apiUrl/follows/$id/follow",
+        "$apiUrl/follows/$id",
         options: Options(contentType: "application/json",
             headers: {'Authorization': 'Bearer $_accessToken'}),
       );
@@ -275,7 +275,11 @@ class ApiProvider {
 
       List originalData = response.data['data'];
       List<UserModel> formattingData = [];
-      originalData.forEach((element) => formattingData.add(UserModel.fromJson(element)));
+      for (var data in originalData) {
+        Map userData = data['following'];
+        userData['followers'] = ((await getFollowerUserList(userData['id']))['content'] as List).length;
+        formattingData.add(UserModel.fromJson(userData));
+      }
 
       return {
         "success": true,

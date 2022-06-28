@@ -4,7 +4,7 @@ import 'package:flutter_recruit_asked/controllers/mainscreen_controller.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
 import 'package:flutter_recruit_asked/models/user.dart';
 import 'package:flutter_recruit_asked/screens/widgets/detail_list_button.dart';
-import 'package:flutter_recruit_asked/screens/widgets/person_box.dart';
+import 'package:flutter_recruit_asked/screens/widgets/following_person_box.dart';
 import 'package:get/get.dart';
 
 import '../../themes/color_theme.dart';
@@ -50,13 +50,12 @@ class FollowingList extends GetWidget<UserController> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<UserModel> responseData = snapshot.data as List<UserModel>;
-                      print(responseData[0].toJson());
 
                       return ListView.builder(
                           physics: BouncingScrollPhysics(),
                           itemCount: responseData.length,
                           itemBuilder: (context, index) {
-                            return PersonBox(boxType: PersonBoxType.following, user: responseData[index]);
+                            return FollowingPersonBox(user: responseData[index]);
                           }
                       );
                     } else if (snapshot.hasError) { //데이터를 정상적으로 불러오지 못했을 때
