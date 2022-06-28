@@ -4,9 +4,9 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
    <application
-        android:label="flutter_recruit_asked"
+        android:label="Disked"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@drawable/logo">
         <activity
             android:name=".MainActivity"
             android:exported="true"
