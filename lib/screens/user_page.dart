@@ -106,6 +106,8 @@ class UserPage extends GetWidget<UserController> {
                     List tabViewTitleList = [];
                     questionList.forEach((key, value) => tabViewTitleList.add("${(key as QuestionStatus).convertStr} ${value.length}"));
 
+                    if (!isMyPage) { tabViewTitleList.removeRange(1, 3); }
+
                     return CustomTabBar(
                         width: _width * 0.95,
                         height: _height * 0.675,
