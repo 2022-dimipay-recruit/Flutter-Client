@@ -1,0 +1,103 @@
+name: flutter_recruit_asked
+description: A new Flutter project.
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.16.2 <3.0.0"
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter
+
+  get: 4.6.1
+  dio: ^4.0.1
+
+  firebase_core: ^1.8.0
+  firebase_auth: ^3.1.4
+  google_sign_in: ^5.2.1
+  kakao_flutter_sdk: ^1.1.1
+  cloud_firestore: ^2.5.4
+
+  image_picker: ^0.8.5+3
+  korea_regexp: ^0.1.0+1
+  shared_preferences: ^2.0.15
+  flutter_secure_storage: ^5.0.2
+  share_plus: ^4.0.10
+  intl: ^0.17.0
+
+  fluttertoast: ^8.0.9
+  flutter_svg: ^0.23.0+1
+  extended_image: ^6.1.0
+  flutter_native_splash: ^2.1.6
+  circular_profile_avatar: ^2.0.5
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^1.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/images/icons/
+    - assets/images/splash/
+
+  fonts:
+    - family: Pretendard
+      fonts:
+        - asset: assets/fonts/Pretendard-Black.otf
+          weight: 900
+        - asset: assets/fonts/Pretendard-ExtraBold.otf
+          weight: 800
+        - asset: assets/fonts/Pretendard-Bold.otf
+          weight: 700
+        - asset: assets/fonts/Pretendard-SemiBold.otf
+          weight: 600
+        - asset: assets/fonts/Pretendard-Medium.otf
+          weight: 500
+        - asset: assets/fonts/Pretendard-Regular.otf
+          weight: 400
+        - asset: assets/fonts/Pretendard-Light.otf
+          weight: 300
+        - asset: assets/fonts/Pretendard-ExtraLight.otf
+          weight: 200
+        - asset: assets/fonts/Pretendard-Thin.otf
+          weight: 100
+    - family: PyeongChangPeace
+      fonts:
+        - asset: assets/fonts/PyeongChangPeace-Bold.otf
+          weight: 700
+        - asset: assets/fonts/PyeongChangPeace-Light.otf
+          weight: 300
+
+flutter_native_splash:
+  background_image: "assets/images/splash/background.png"
+  image: assets/images/splash/typoLogo.png
