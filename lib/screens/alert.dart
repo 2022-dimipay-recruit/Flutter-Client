@@ -1,6 +1,12 @@
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_recruit_asked/controllers/alert_controller.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
+import 'package:flutter_recruit_asked/screens/widgets/alert_box.dart';
+import 'package:flutter_recruit_asked/screens/widgets/community_question_box.dart';
+import 'package:flutter_recruit_asked/screens/widgets/custom_tabbar.dart';
+import 'package:flutter_recruit_asked/screens/widgets/personal_question_box.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../../controllers/mainscreen_controller.dart';
@@ -8,28 +14,11 @@ import '../../controllers/question_controller.dart';
 import '../../models/question.dart';
 import '../../themes/color_theme.dart';
 import '../../themes/text_theme.dart';
-import '../widgets/community_question_box.dart';
-import '../widgets/custom_tabbar.dart';
-import '../widgets/personal_question_box.dart';
+import '../models/alert.dart';
+import 'myprofile/question_list.dart';
 
-enum QuestionListType {
-  myQuestion,
-  myBookmark
-}
-
-extension QuestionListTypeExtension on QuestionListType {
-  String get getStr {
-    switch (this) {
-      case QuestionListType.myQuestion: return "질문";
-      case QuestionListType.myBookmark: return "저장";
-      default: return "";
-    }
-  }
-}
-
-class QuestionList extends GetWidget<UserController> {
-  final QuestionListType questionType;
-  QuestionList({required this.questionType});
+class Alert extends GetWidget<AlertController> {
+  Alert({Key? key}) : super(key: key);
 
   late double _height, _width;
 
@@ -39,11 +28,9 @@ class QuestionList extends GetWidget<UserController> {
     _width = MediaQuery.of(context).size.width;
 
     MainScreenController _mainScreenController = Get.find<MainScreenController>();
-    QuestionController _questionController = Get.find<QuestionController>();
+    UserController _userController = Get.find<UserController>();
 
-    questionType == QuestionListType.myQuestion ?
-      _questionController.getUserAskQuestionList() :
-      _questionController.getUserBookmarkQuestionList();
+    controller.getUserAlertList();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -52,38 +39,37 @@ class QuestionList extends GetWidget<UserController> {
           alignment: Alignment.topCenter,
           children:  [
             SizedBox(width: _width, height: _height),
-            Text("${questionType.getStr} 목록", style: appBarTitle),
+            Text(_userController.user.linkId!, style: appBarTitle),
             Positioned(
               left: _width * 0.075,
-              child: GestureDetector(onTap: () => _mainScreenController.showWindow = _mainScreenController.bottomNavigationBarPages[3], child: Icon(Icons.arrow_back_ios_sharp, size: 24)),
+              child: GestureDetector(onTap: () => _mainScreenController.showWindow = _mainScreenController.bottomNavigationBarPages[_mainScreenController.selectNavigationBarIndex.value], child: Icon(Icons.arrow_back_ios_sharp, size: 24)),
+            ),
+            Positioned(
+              right: _width * 0.075,
+              child: GestureDetector(onTap: () => controller.removeAllAlert(), child: SvgPicture.asset("assets/images/icons/trash.svg")),
             ),
             Positioned(
               bottom: 0,
               child: Obx(() {
-                if (!_questionController.isUserBookmarkQuestionListRefreshing.value || !_questionController.isUserAskQuestionListRefreshing.value) {
-                  List<QuestionModel> responseData =
-                  questionType == QuestionListType.myQuestion ?
-                    _questionController.userAskQuestionList :
-                    _questionController.userBookmarkQuestionList;
+                if (!controller.isUserAlertListRefreshing.value) {
+                  List<AlertModel> responseData = controller.userAlertList;
 
-                  Map questionList = {};
-                  for (QuestionType tabQuestionType in QuestionType.values) {
-                    questionList.addAll({tabQuestionType: <QuestionModel>[]});
+                  List tabViewTitleList = ['활동 알림', '팔로워 알림'];
+                  Map alertList = {};
+                  for (String tabAlertType in tabViewTitleList) {
+                    alertList.addAll({tabAlertType: <AlertModel>[]});
                   }
 
-                  responseData.forEach((question) => (questionList[question.questionType!] as List<QuestionModel>).add(question));
-
-                  List tabViewTitleList = [];
-                  questionList.forEach((key, value) => tabViewTitleList.add((key as QuestionType).convertStr));
+                  responseData.forEach((alert) => (alertList[alert.type! == AlertType.newPost ? "팔로워 알림" : "활동 알림"] as List<AlertModel>).add(alert));
 
 
                   return CustomTabBar(
                       width: _width,
-                      height: _height * 0.78,
+                      height: _height * 0.8,
                       indicatorSizeMode: TabBarIndicatorSizeMode.both,
                       tabWindowsList: questionTabView(
                         tabViewTitleList,
-                        questionList,
+                        alertList,
                       )
                   );
                 } else { //데이터를 불러오는 중
@@ -103,11 +89,11 @@ class QuestionList extends GetWidget<UserController> {
     );
   }
 
-  List<CustomTabWindow> questionTabView(List tabTitleList, Map questionList) {
+  List<CustomTabWindow> questionTabView(List tabTitleList, Map alertList) {
     List<CustomTabWindow> result = [];
 
     for (String title in tabTitleList) {
-      List tabQuestionList = questionList[title.convertQuestionType];
+      List tabAlertList = alertList[title];
 
       result.add(
           CustomTabWindow(
@@ -122,12 +108,9 @@ class QuestionList extends GetWidget<UserController> {
                       height: _height * 0.7,
                       child: ListView.builder(
                           physics: BouncingScrollPhysics(),
-                          itemCount: tabQuestionList.length,
+                          itemCount: tabAlertList.length,
                           itemBuilder: (context, index) {
-                            return (title.convertQuestionType == QuestionType.personal ?
-                                PersonalQuestionBox(question: tabQuestionList[index], index: index)
-                              : CommunityQuestionBox(question: tabQuestionList[index], index: index)
-                            );
+                            return AlertBox(alert: tabAlertList[index]);
                           }
                       ),
                     ),

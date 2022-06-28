@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_recruit_asked/screens/auth/register_userinfo.dart';
+import 'package:flutter_recruit_asked/services/api_provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:google_sign_in/google_sign_in.dart';
@@ -16,25 +17,26 @@ class AuthController extends GetxController {
 
   final Rxn<User> _firebaseUser = Rxn<User>();
   User? get user => _firebaseUser.value;
-  Map loginUserInfo = {}; //userID, email, name, profileImgUrl
+  Map loginUserInfo = {};
   RxString selectGroupName = "init".obs;
 
   TextEditingController nicknameTextController = TextEditingController();
   TextEditingController idTextController = TextEditingController();
+  GlobalKey<FormState> nicknameFormKey = new GlobalKey<FormState>();
+  GlobalKey<FormState> idFormKey = new GlobalKey<FormState>();
+  final FocusNode nicknameFocus = new FocusNode();
+  final FocusNode idFocus = new FocusNode();
 
   RxBool isLogin = false.obs;
 
   final Dio _dio = Get.find<Dio>();
+  ApiProvider _apiProvider = Get.find<ApiProvider>();
 
   @override
   onInit() async {
     super.onInit();
     _firebaseUser.bindStream(authInstance.authStateChanges());
     _firebaseUser.value = authInstance.currentUser;
-    if (user != null) {
-      //Get.find<UserController>().user = await FirestoreDatabase().getUser(user!.uid);
-      //TODO 백엔드에서 유저 불러오는 코드 추가
-    }
   }
 
   void signInWithGoogle() async {
@@ -62,7 +64,7 @@ class AuthController extends GetxController {
     if (_authResult.additionalUserInfo!.isNewUser) {
       Get.to(RegisterUserInfo());
     } else {
-      writeAccountInfo();
+      await _apiProvider.userLogin("google", loginUserInfo["userid"]);
       isLogin.value = true;
     }
   }
@@ -83,6 +85,8 @@ class AuthController extends GetxController {
       loginUserInfo["name"] = user.kakaoAccount!.profile!.nickname;
       loginUserInfo["profileImgUrl"] = user.kakaoAccount!.profile!.profileImageUrl;
 
+      Get.find<UserController>().showToast("카카오 로그인 중입니다.\n카카오톡 연동에 시간이 걸리니 잠시만 기다려주세요.");
+
       late Response response;
       try {
         response = await _dio.post('https://dprc.tilto.kr/login/kakao',
@@ -101,8 +105,8 @@ class AuthController extends GetxController {
       UserCredential _authResult = await FirebaseAuth.instance
           .signInWithCustomToken(response.data['data']['token']);
 
-      if (user.hasSignedUp!) {
-        writeAccountInfo();
+      if (await _apiProvider.isKakaoAccountAlreadySignUp(loginUserInfo["userid"])) {
+        await _apiProvider.userLogin("kakao", loginUserInfo["userid"]);
         isLogin.value = true;
       } else {
         Get.to(RegisterUserInfo());
@@ -150,7 +154,7 @@ class AuthController extends GetxController {
 
   void writeAccountInfo() async {
     UserModel _user = UserModel(
-      id: loginUserInfo["userid"],
+      firebaseAuthId: loginUserInfo["userid"],
       email: loginUserInfo["email"],
       name: loginUserInfo["name"],
       profileImg: loginUserInfo["profileImgUrl"],
@@ -158,6 +162,6 @@ class AuthController extends GetxController {
       type: loginUserInfo['type']
     );
 
-    Get.find<UserController>().user = _user;
+   await Get.find<ApiProvider>().userSignUp(_user);
   }
 }

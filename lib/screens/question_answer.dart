@@ -68,15 +68,15 @@ class QuestionAnswer extends GetWidget<QuestionController> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(question.author, style: questionAnswerPageAuthor),
+                                Text(question.author!.name!, style: questionAnswerPageAuthor),
                                 SizedBox(width: 4),
-                                Text(question.date, style: questionAnswerPageDate)
+                                Text(question.date!.toString(), style: questionAnswerPageDate)
                               ],
                             ),
                             SizedBox(height: 4),
-                            Text(question.content, style: questionAnswerPageContent),
+                            Text(question.content!, style: questionAnswerPageContent),
                             SizedBox(height: 10),
-                            Text("${question.author} 님 질문에 답변을 작성해주세요", style: questionAnswerPageHelpMsg)
+                            Text("${question.author!.name!} 님 질문에 답변을 작성해주세요", style: questionAnswerPageHelpMsg)
                           ],
                         )
                       ],
@@ -114,10 +114,7 @@ class QuestionAnswer extends GetWidget<QuestionController> {
               child: PurpleButton(
                   buttonMode: PurpleButtonMode.regular,
                   text: "답변하기",
-                  clickAction: () {
-                    //TODO 질문 전송
-                    Get.back();
-                  }
+                  clickAction: () => controller.commentToQuestion(question.id!, controller.answerTextController.text, false, question.questionType!)
               )
             )
           ],

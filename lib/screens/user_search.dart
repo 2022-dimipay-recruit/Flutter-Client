@@ -64,6 +64,7 @@ class UserSearch extends SearchDelegate {
     _width = MediaQuery.of(context).size.width;
 
     QuestionController _questionController = Get.find<QuestionController>();
+    MainScreenController _mainScreenController = Get.find<MainScreenController>();
 
     RxList<String> latestSearchList = _questionController.getLatestSearchList();
 
@@ -89,7 +90,7 @@ class UserSearch extends SearchDelegate {
                       latestSearchList.value = latestSearchList.value.toSet().toList();
                       _questionController.saveLatestSearchList(latestSearchList.value);
 
-                      showUserWindow(selectUser);
+                      _mainScreenController.showUserWindow(selectUser);
                     },
                     child: ListTile(
                       title: Text(selectUser.name!, style: searchUserBoxTitle),
@@ -138,7 +139,18 @@ class UserSearch extends SearchDelegate {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   GestureDetector(
-                                      onTap: () => showUserWindow(UserModel()), //TODO 백엔드 유저 정보 불러오는거 필요
+                                      onTap: () {
+                                        bool isFindUserInfo = false;
+
+                                        _userList.forEach((element) {
+                                          if (element.linkId! == latestSearchList[index]) {
+                                            _mainScreenController.showUserWindow(element);
+                                            isFindUserInfo = true;
+                                          }
+                                        });
+
+                                        if (!isFindUserInfo) { Get.find<UserController>().showToast("유저 정보를 불러오는데 실패하였습니다."); }
+                                      },
                                       child: Text(latestSearchList[index], style: searchLatestSearchUserId),
                                   ),
                                   GestureDetector(
@@ -204,11 +216,5 @@ class UserSearch extends SearchDelegate {
 
 
     return result;
-  }
-
-  showUserWindow(UserModel user) {
-    Get.find<MainScreenController>().selectNavigationBarIndex.value = 2;
-    Get.find<MainScreenController>().showWindow = UserPage(user: user);
-    Get.back();
   }
 }

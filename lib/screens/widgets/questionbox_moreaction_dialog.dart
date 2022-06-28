@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_recruit_asked/controllers/question_controller.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_button.dart';
 import 'package:flutter_recruit_asked/themes/color_theme.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../../models/question.dart';
 import '../../themes/text_theme.dart';
 import 'big_action_button.dart';
 
-class QuestionBoxMoreActionDialog extends StatelessWidget {
+class QuestionBoxMoreActionDialog extends GetWidget<QuestionController> {
   final dynamic questionContentWidget;
-  QuestionBoxMoreActionDialog({required this.questionContentWidget});
+  QuestionModel question;
+  QuestionBoxMoreActionDialog({required this.questionContentWidget, required this.question});
 
   late double _displayHeight, _displayWidth;
 
@@ -22,14 +25,14 @@ class QuestionBoxMoreActionDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       child: SizedBox(
         width: _displayWidth * 0.9,
-        height: _displayHeight * 0.43,
+        height: _displayHeight * (0.43 + (question.imageLink! != "" ? (0.175 + (question.questionType == QuestionType.personal ? 0.04 : 0)) : 0)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
                 alignment: FractionalOffset.center,
                 width: _displayWidth * 0.923,
-                height: _displayHeight * 0.2,
+                height: _displayHeight * (0.2 + (question.imageLink! != "" ? (0.175 + (question.questionType == QuestionType.personal ? 0.04 : 0)) : 0)),
                 padding: const EdgeInsets.all(20.0),
                 decoration: BoxDecoration(
                     color: Colors.white,
@@ -40,12 +43,12 @@ class QuestionBoxMoreActionDialog extends StatelessWidget {
             SizedBox(height: _displayHeight * 0.0225),
             BigActionButton(
               buttonType: BigActionButtonType.share,
-              clickAction: () => print("clicked"),
+              clickAction: () => controller.shareQuestion(question),
             ),
             SizedBox(height: _displayHeight * 0.0125),
             BigActionButton(
               buttonType: BigActionButtonType.bookmark,
-              clickAction: () => print("clicked"),
+              clickAction: () => controller.bookmarkQuestion(question.id!, question.questionType!),
             ),
             SizedBox(height: _displayHeight * 0.0125),
             BigActionButton(
@@ -72,13 +75,18 @@ class QuestionBoxMoreActionDialog extends StatelessWidget {
       "개인정보 요청 및 오프만남 요구 등"
     ];
     RxMap optionStatus = {}.obs;
+    String nowChoiceReason = "";
     reportOptionList.forEach((element) => optionStatus.addAll({element: false}));
 
     reportOptionWidget(String text) => Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Obx(() => GestureDetector(
-          onTap: () => optionStatus[text] = !optionStatus[text],
+          onTap: () {
+            optionStatus.forEach((key, value) => optionStatus[key] = false);
+            optionStatus[text] = !optionStatus[text];
+            nowChoiceReason = text;
+          },
           child: SvgPicture.asset(
             "assets/images/icons/checkbox.svg",
             width: 24,
@@ -131,14 +139,13 @@ class QuestionBoxMoreActionDialog extends StatelessWidget {
                   PurpleButton(
                     buttonMode: PurpleButtonMode.regular,
                     text: "신고하기",
-                    clickAction: () {
-                      Get.back();
-                      //TODO 백엔드 신고 전달 코드
-                      showDialog(
-                        context: context,
-                        builder: (_) => reportSuccessDialog(),
-                      );
-                    },
+                    clickAction: () => controller.reportQuestion(
+                      question.id!,
+                      question.questionType!,
+                      nowChoiceReason,
+                      context,
+                      reportSuccessDialog()
+                    )
                   )
                 ],
               ),
@@ -175,7 +182,7 @@ class QuestionBoxMoreActionDialog extends StatelessWidget {
             Positioned(
               bottom: 0,
               child: GestureDetector(
-                onTap: () => Get.back(),
+                onTap: () { Get.back(); Get.back(); },
                 child: Container(
                   width: _displayWidth * 0.72,
                   height: _displayHeight * 0.06,

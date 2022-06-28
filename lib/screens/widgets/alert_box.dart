@@ -1,27 +1,25 @@
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_recruit_asked/controllers/question_controller.dart';
 import 'package:flutter_recruit_asked/models/user.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_button.dart';
 import 'package:flutter_recruit_asked/themes/color_theme.dart';
 import 'package:get/get.dart';
 
 import '../../controllers/user_controller.dart';
+import '../../models/alert.dart';
 import '../../themes/text_theme.dart';
 
-enum PersonBoxType {
-  search,
-  following
-}
-
-class PersonBox extends StatelessWidget {
-  final PersonBoxType boxType;
-  final UserModel user;
-  PersonBox({required this.boxType, required this.user});
+class AlertBox extends StatelessWidget {
+  final AlertModel alert;
+  AlertBox({required this.alert});
 
   @override
   Widget build(BuildContext context) {
     final double _displayHeight = MediaQuery.of(context).size.height;
     final double _displayWidth = MediaQuery.of(context).size.width;
+
+    QuestionController _questionController = Get.find<QuestionController>();
 
     return SizedBox(
       width: _displayWidth * 0.9,
@@ -33,24 +31,38 @@ class PersonBox extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Get.find<UserController>().getProfileWidget(Get.find<UserController>().user, _displayWidth, 0.07),
               SizedBox(width: 8),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(boxType == PersonBoxType.search ? user.name! : user.id!, style: personBoxTitle),
+                  Text("${_questionController.simpleDateFormat.format(alert.date!)}에 온 알림", style: questionAnswerDate),
                   SizedBox(height: 4),
-                  Text("팔로워 213", style: personBoxSubTitle.copyWith(color: (boxType == PersonBoxType.search ? Colors.black : grayOne))),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(alert.content!, style: personBoxSubTitle.copyWith(fontWeight: !alert.isRead! ? FontWeight.w600 : FontWeight.w400)),
+                      SizedBox(width: 4),
+                      (!alert.isRead! ?
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Container(
+                          width: 5,
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: purpleOne,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ) : SizedBox()
+                      )
+                    ],
+                  )
                 ],
               )
             ],
           ),
-          (
-            boxType == PersonBoxType.following ?
-            PurpleButton(buttonMode: PurpleButtonMode.regular, text: "팔로잉", clickAction: () => print("CLick"))
-            : SizedBox()
-          )
         ],
       )
     );

@@ -4,6 +4,7 @@ import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_recruit_asked/controllers/mainscreen_controller.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_switch.dart';
@@ -56,35 +57,19 @@ class AskQuestion extends GetWidget<QuestionController> {
                   children: [
                     Row(
                       children: [
-                        Get.find<UserController>().getProfileWidget(Get.find<UserController>().user, _width, 0.061),
+                        _userController.getProfileWidget(_userController.user, _width, 0.061),
                         SizedBox(width: 12),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("윤지", style: askQuestionAuthor),
+                            Text(_userController.user.name!, style: askQuestionAuthor),
                             SizedBox(height: 4),
-                            PurpleSwitch(optionList: ['익명', '공개'], nowValue: controller.questionMode)
+                            PurpleSwitch(optionList: ['익명', '공개'], nowValue: controller.questionPublicMode)
                           ],
                         )
                       ],
                     ),
                     SizedBox(height: _height * 0.01),
-                    SizedBox(
-                      width: _width * 0.9,
-                      child: TextField(
-                        minLines: 1,
-                        maxLines: 1,
-                        controller: controller.titleTextController,
-                        keyboardType: TextInputType.text,
-                        style: askQuestionContent,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(vertical: _height * 0.02),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 0, style: BorderStyle.none,)),
-                          hintText: "제목 입력 (선택)",
-                          hintStyle: askQuestionContent.copyWith(color: grayOne)
-                        ),
-                      ),
-                    ),
                     Obx(() => SizedBox(
                       width: _width * 0.9,
                       height: (_height * (controller.questionImageFile.value!.path == "" ? 0.7 : 0.45)),
@@ -162,11 +147,7 @@ class AskQuestion extends GetWidget<QuestionController> {
                     PurpleButton(
                       buttonMode: PurpleButtonMode.regular,
                       text: "질문하기",
-                      clickAction: () {
-                        //TODO 질문 전송
-                        controller.questionImageFile.value = XFile("");
-                        Get.back();
-                      }
+                      clickAction: () => controller.uploadNewQuestion(questionType, Get.find<MainScreenController>().userInUserPage.value.id!)
                     )
                   ],
                 ),

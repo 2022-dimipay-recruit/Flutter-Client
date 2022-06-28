@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_recruit_asked/controllers/auth_controller.dart';
 import 'package:flutter_recruit_asked/controllers/mainscreen_controller.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
+import 'package:flutter_recruit_asked/screens/alert.dart';
 import 'package:flutter_recruit_asked/screens/myprofile/change_profile.dart';
 import 'package:flutter_recruit_asked/screens/myprofile/following_list.dart';
 import 'package:flutter_recruit_asked/screens/myprofile/question_list.dart';
+import 'package:flutter_recruit_asked/screens/widgets/alert_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/simple_list_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/profile_widget.dart';
 import 'package:flutter_svg/svg.dart';
@@ -42,12 +44,10 @@ class MyProfile extends GetWidget<UserController> {
                       alignment: Alignment.center,
                       children: [
                         SizedBox(width: _width),
-                        Text("dohui_doch", style: appBarTitle),
+                        Text(controller.user.linkId!, style: appBarTitle),
                         Positioned(
                           right: _width * 0.075,
-                          child: SvgPicture.asset(
-                            "assets/images/icons/alert.svg",
-                          ),
+                          child: AlertButton(),
                         ),
                       ],
                     ),
@@ -57,7 +57,7 @@ class MyProfile extends GetWidget<UserController> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          ProfileWidget(user: controller.user, showShareBtn: false),
+                          ProfileWidget(user: controller.userModel, showShareBtn: false),
                           GestureDetector(
                               onTap: () => Get.to(ChangeProfile(), transition: Transition.rightToLeft),
                               child: SvgPicture.asset(

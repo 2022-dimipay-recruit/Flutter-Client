@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../../controllers/auth_controller.dart';
+import '../../services/check_text_validate.dart';
 
 class RegisterUserInfo extends GetWidget<AuthController> {
   RegisterUserInfo({Key? key}) : super(key: key);
@@ -30,9 +31,9 @@ class RegisterUserInfo extends GetWidget<AuthController> {
               children: [
                 Text("아이디와 닉네임을 설정해주세요.", style: userInfoTitle),
                 SizedBox(height: _height * 0.05),
-                infoTextField(controller.idTextController, "아이디"),
+                infoTextField(controller.idTextController, controller.idFocus, controller.idFormKey, "아이디"),
                 SizedBox(height: _height * 0.02),
-                infoTextField(controller.nicknameTextController, "닉네임"),
+                infoTextField(controller.nicknameTextController, controller.nicknameFocus, controller.nicknameFormKey, "닉네임"),
               ],
             ),
           ),
@@ -42,12 +43,14 @@ class RegisterUserInfo extends GetWidget<AuthController> {
               buttonMode: PurpleButtonMode.large,
               text: "확인",
               clickAction: () {
-                controller.loginUserInfo["name"] = controller.nicknameTextController.text;
-                controller.loginUserInfo["linkId"] = controller.idTextController.text;
+                if (controller.idFormKey.currentState!.validate() && controller.nicknameFormKey.currentState!.validate()) {
+                  controller.loginUserInfo["name"] = controller.nicknameTextController.text;
+                  controller.loginUserInfo["linkId"] = controller.idTextController.text;
 
-                controller.writeAccountInfo();
-                controller.isLogin.value = true;
-                Get.back();
+                  controller.writeAccountInfo();
+                  controller.isLogin.value = true;
+                  Get.back();
+                }
               }
             ),
           )
@@ -56,17 +59,25 @@ class RegisterUserInfo extends GetWidget<AuthController> {
     );
   }
 
-  infoTextField(TextEditingController controller, String hintText) {
+  infoTextField(TextEditingController controller, FocusNode focusNode, GlobalKey<FormState> formKey, String hintText) {
     return SizedBox(
-      child: TextFormField(
-        keyboardType: TextInputType.text,
-        controller: controller,
-        style: userInfoTextField,
-        cursorColor: purpleOne,
-        decoration: InputDecoration(
-          border: UnderlineInputBorder(borderSide: BorderSide(width: 0.5)),
-          hintText: hintText,
-          hintStyle: userInfoTextField.copyWith(color: grayOne),
+      width: _width * 0.875,
+      child: Form(
+        key: formKey,
+        child: TextFormField(
+          keyboardType: TextInputType.text,
+          controller: controller,
+          style: userInfoTextField,
+          cursorColor: purpleOne,
+          decoration: InputDecoration(
+            border: UnderlineInputBorder(borderSide: BorderSide(width: 0.5)),
+            hintText: hintText,
+            hintStyle: userInfoTextField.copyWith(color: grayOne),
+          ),
+          onChanged: (value) {
+            formKey.currentState!.validate();
+          },
+          validator: (value) => CheckTextValidate().validateTextLength(focusNode, value!, 16),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/painting.dart';
 
 const purpleOne = Color(0xFF8B00FF);
+const purpleBlurShadowOne = Color(0x4DDFA7F3);
 
 const grayOne = Color(0xFF505966);
 const grayTwo = Color(0xFFB1B8C1);

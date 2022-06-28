@@ -8,8 +8,8 @@ import 'package:get/get.dart';
 import '../../controllers/user_controller.dart';
 import '../../themes/text_theme.dart';
 
-class ProfileWidget extends StatelessWidget {
-  final UserModel user;
+class ProfileWidget extends GetWidget<UserController> {
+  final Rx<UserModel> user;
   final bool showShareBtn;
   ProfileWidget({required this.user, required this.showShareBtn});
 
@@ -18,11 +18,11 @@ class ProfileWidget extends StatelessWidget {
     final double _displayHeight = MediaQuery.of(context).size.height;
     final double _displayWidth = MediaQuery.of(context).size.width;
 
-    return Row(
+    return Obx(() => Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Get.find<UserController>().getProfileWidget(Get.find<UserController>().user, _displayWidth, 0.105),
+        Get.find<UserController>().getProfileWidget(user.value, _displayWidth, 0.105),
         SizedBox(width: _displayWidth * 0.05),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -32,10 +32,12 @@ class ProfileWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("유도히", style: profileNickname),
+                Text(user.value.name!, style: profileNickname),
                 SizedBox(width: _displayWidth * 0.0125),
                 (showShareBtn ?
-                  Container(
+                GestureDetector(
+                  onTap: () => controller.shareProfile(user.value),
+                  child: Container(
                     width: 20,
                     height: 20,
                     decoration: BoxDecoration(
@@ -50,16 +52,17 @@ class ProfileWidget extends StatelessWidget {
                         height: 16,
                       ),
                     ),
-                  ) : SizedBox()),
+                  ),
+                ) : SizedBox()),
               ],
             ),
             SizedBox(height: 4),
-            Text("팔로워 213", style: profileFollwer),
+            Text("팔로워 ${user.value.followers!}", style: profileFollwer),
             SizedBox(height: 2),
-            Text("반가워요 여러분", style: profileIntroduce),
+            Text(user.value.description!, style: profileIntroduce),
           ],
         )
       ],
-    );
+    ));
   }
 }
