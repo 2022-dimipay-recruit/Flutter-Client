@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_recruit_asked/controllers/mainscreen_controller.dart';
 import 'package:flutter_recruit_asked/controllers/question_controller.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
 import 'package:flutter_recruit_asked/models/question.dart';
@@ -90,7 +91,11 @@ class ApiProvider {
     if (!(await validateAccessToken())) { await refreshAccessToken(); }
 
     bool isSuccessStoreData = (await getUserData((await _storage.read(key: "diskedAccount_userId"))!, true))['success'];
-    if (!isSuccessStoreData) { _userController.user = UserModel.fromJson(json.decode((await _storage.read(key: "diskedAccount_userInfo"))!)); }
+    if (!isSuccessStoreData) {
+      UserModel user = UserModel.fromJson(json.decode((await _storage.read(key: "diskedAccount_userInfo"))!));
+      _userController.user = user;
+      Get.find<MainScreenController>().userInUserPage.value = user;
+    }
   }
 
   validateAccessToken() async {
@@ -156,7 +161,9 @@ class ApiProvider {
   }
 
   storeUserData(Map userMapData) async {
-    _userController.user = UserModel.fromJson(userMapData);
+    UserModel user = UserModel.fromJson(userMapData);
+    _userController.user = user;
+    Get.find<MainScreenController>().userInUserPage.value = user;
     await _storage.write(key: "diskedAccount_userInfo", value: json.encode(_userController.user.toJson()));
   }
 
@@ -255,6 +262,33 @@ class ApiProvider {
       List originalData = response.data['data'];
       List<UserModel> formattingData = [];
       originalData.forEach((element) => formattingData.add(UserModel.fromJson(element)));
+
+      return {
+        "success": true,
+        "content": formattingData
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  getAllUserList() async {
+    try {
+      Response response = await _dio.get(
+        "$apiUrl/users",
+        options: Options(contentType: "application/json",
+            headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      List originalData = response.data['data'];
+      List<UserModel> formattingData = [];
+      for (var user in originalData) {
+        user['followers'] = ((await getFollowerUserList(user['id']))['content'] as List).length;
+        formattingData.add(UserModel.fromJson(user));
+      }
 
       return {
         "success": true,

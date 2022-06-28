@@ -62,11 +62,14 @@ class PersonalQuestionBox extends GetWidget<QuestionController> {
                     Text(question.content!, style: questionContent),
                     SizedBox(height: 6),
                     (question.imageLink!.isNotEmpty ?
-                      SizedBox(
-                        height: _displayHeight * 0.2,
-                        child: ClipRRect(
-                          child: ExtendedImage.network(question.imageLink!),
-                          borderRadius: BorderRadius.circular(30.0),
+                      GestureDetector(
+                        onTap: () => showDialog(context: context, builder: (_) => Dialog(child: SizedBox(width: _displayWidth * 0.9, child: ExtendedImage.network(question.imageLink!)))),
+                        child: SizedBox(
+                          height: _displayHeight * 0.2,
+                          child: ClipRRect(
+                            child: ExtendedImage.network(question.imageLink!),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
                         ),
                       ) : SizedBox()
                     )

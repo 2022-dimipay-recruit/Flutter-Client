@@ -1,7 +1,9 @@
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_recruit_asked/controllers/question_controller.dart';
 import 'package:flutter_recruit_asked/models/question.dart';
+import 'package:flutter_recruit_asked/screens/widgets/follow_button.dart';
 import 'package:flutter_recruit_asked/services/api_provider.dart';
 import 'package:flutter_recruit_asked/themes/color_theme.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../models/user.dart';
+import 'mainscreen_controller.dart';
 
 class  UserController extends GetxController {
   final Rx<UserModel> _userModel = UserModel().obs;
@@ -27,9 +30,11 @@ class  UserController extends GetxController {
   RxString nicknameChangeText = "".obs;
   RxString descriptionChangeText = "".obs;
   RxString profileImageUrl = "".obs;
+  Rx<FollowButtonType> followBtnType = FollowButtonType.follow.obs;
 
   ImagePicker _imagePicker = Get.find<ImagePicker>();
   late ApiProvider _apiProvider;
+  late QuestionController _questionController;
 
   @override
   void onInit() {
@@ -40,7 +45,10 @@ class  UserController extends GetxController {
       descriptionChangeText.value = descriptionTextController.text;
     });
 
-    Future.delayed(Duration(milliseconds: 500), () => _apiProvider = Get.find<ApiProvider>());
+    Future.delayed(Duration(milliseconds: 500), () {
+      _apiProvider = Get.find<ApiProvider>();
+      _questionController = Get.find<QuestionController>();
+    });
 
     super.onInit();
   }
@@ -76,7 +84,21 @@ class  UserController extends GetxController {
 
   shareProfile(UserModel shareUser) async => Share.share('매일매일 새롭고 재미있는 질문이 올라오는 곳, Disked 앱에 참여해보세요!\n\n${user.name!}님이 ${shareUser.name!}(${shareUser.linkId!}) 유저를 공유하였습니다.');
 
-  followOtherUser(String uid) => _apiProvider.followOtherUser(uid);
+  followOtherUser(String uid, QuestionType questionType, Rx<FollowButtonType> btnType) async {
+    Map result = await _apiProvider.followOtherUser(uid);
+
+    questionType == QuestionType.personal ? _questionController.getUserPersonalQuestionList(Get.find<MainScreenController>().userInUserPage.value.id!) : _questionController.getCommunityQuestionList();
+    showToast("유저 팔로우에 ${result['success'] ? "성공" : "실패"}하였습니다.");
+    if (result['success']) { btnType.value = (btnType.value == FollowButtonType.follow ? FollowButtonType.unfollow : FollowButtonType.follow); }
+  }
+
+  unfollowOtherUser(String uid, QuestionType questionType, Rx<FollowButtonType> btnType) async {
+    Map result = await _apiProvider.unfollowOtherUser(uid);
+
+    questionType == QuestionType.personal ? _questionController.getUserPersonalQuestionList(Get.find<MainScreenController>().userInUserPage.value.id!) : _questionController.getCommunityQuestionList();
+    showToast("유저 언팔로우에 ${result['success'] ? "성공" : "실패"}하였습니다.");
+    if (result['success']) { btnType.value = (btnType.value == FollowButtonType.follow ? FollowButtonType.unfollow : FollowButtonType.follow); }
+  }
 
   getFollowingUserList() async => (await _apiProvider.getFollowingUserList(user.id!))['content'];
 

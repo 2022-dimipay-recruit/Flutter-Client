@@ -12,6 +12,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 
+import 'mainscreen_controller.dart';
+
 enum QuestionType {
   personal,
   community
@@ -127,20 +129,7 @@ class QuestionController extends GetxController {
 
   getImageFromDevice(ImageSource sourceKind) async => questionImageFile.value = await _imagePicker.pickImage(source: sourceKind);
 
-  getUserList() async {
-    return [
-      UserModel(
-        linkId: "dohui_doch",
-        name: "유도희1",
-        followers: 15,
-      ),
-      UserModel(
-        linkId: "dohui_doch_2",
-        name: "유도희2",
-        followers: 2345
-      )
-    ];
-  }
+  getUserList() async => (await _apiProvider.getAllUserList())['content'];
 
   uploadNewQuestion(QuestionType questionType) async {
     QuestionModel newQuestion = QuestionModel(
@@ -152,12 +141,11 @@ class QuestionController extends GetxController {
     );
 
     Map result = await _apiProvider.askQuestion(newQuestion);
-    print(result);
 
     if (result['success']) {
       _userController.showToast("질문 등록에 성공하였습니다.");
       questionImageFile.value = XFile("");
-      questionType == QuestionType.personal ? getUserPersonalQuestionList() : getCommunityQuestionList();
+      questionType == QuestionType.personal ? getUserPersonalQuestionList(Get.find<MainScreenController>().userInUserPage.value.id!) : getCommunityQuestionList();
       Get.back();
     } else {
       _userController.showToast("질문 등록에 실패하였습니다.");
@@ -167,7 +155,7 @@ class QuestionController extends GetxController {
   modifyQuestion(String postId, QuestionType questionType) async {
     Map result = await _apiProvider.modifyQuestion(postId, contentTextController.text);
 
-    questionType == QuestionType.personal ? getUserPersonalQuestionList() : getCommunityQuestionList();
+    questionType == QuestionType.personal ? getUserPersonalQuestionList(Get.find<MainScreenController>().userInUserPage.value.id!) : getCommunityQuestionList();
     _userController.showToast("질문 수정에 ${result['success'] ? "성공" : "실패"}하였습니다.");
     Get.back();
   }
@@ -175,35 +163,35 @@ class QuestionController extends GetxController {
   removeQuestion(String postId, QuestionType questionType) async {
     Map result = await _apiProvider.removeQuestion(postId);
 
-    questionType == QuestionType.personal ? getUserPersonalQuestionList() : getCommunityQuestionList();
+    questionType == QuestionType.personal ? getUserPersonalQuestionList(Get.find<MainScreenController>().userInUserPage.value.id!) : getCommunityQuestionList();
     _userController.showToast("질문 삭제에 ${result['success'] ? "성공" : "실패"}하였습니다.");
   }
 
   rejectQuestion(String postId, QuestionType questionType) async {
     Map result = await _apiProvider.rejectQuestion(postId);
 
-    questionType == QuestionType.personal ? getUserPersonalQuestionList() : getCommunityQuestionList();
+    questionType == QuestionType.personal ? getUserPersonalQuestionList(Get.find<MainScreenController>().userInUserPage.value.id!) : getCommunityQuestionList();
     _userController.showToast("질문 거절에 ${result['success'] ? "성공" : "실패"}하였습니다.");
   }
 
   likeQuestion(String postId, QuestionType questionType) async {
     Map result = await _apiProvider.likeQuestion(postId);
 
-    questionType == QuestionType.personal ? getUserPersonalQuestionList() : getCommunityQuestionList();
+    questionType == QuestionType.personal ? getUserPersonalQuestionList(Get.find<MainScreenController>().userInUserPage.value.id!) : getCommunityQuestionList();
     _userController.showToast("질문 좋아요에 ${result['success'] ? "성공" : "실패"}하였습니다.");
   }
 
   unlikeQuestion(String postId, QuestionType questionType) async {
     Map result = await _apiProvider.unlikeQuestion(postId);
 
-    questionType == QuestionType.personal ? getUserPersonalQuestionList() : getCommunityQuestionList();
+    questionType == QuestionType.personal ? getUserPersonalQuestionList(Get.find<MainScreenController>().userInUserPage.value.id!) : getCommunityQuestionList();
     _userController.showToast("질문 좋아요 제거에 ${result['success'] ? "성공" : "실패"}하였습니다.");
   }
 
   bookmarkQuestion(String postId, QuestionType questionType) async {
     Map result = await _apiProvider.bookmarkQuestion(postId);
 
-    questionType == QuestionType.personal ? getUserPersonalQuestionList() : getCommunityQuestionList();
+    questionType == QuestionType.personal ? getUserPersonalQuestionList(Get.find<MainScreenController>().userInUserPage.value.id!) : getCommunityQuestionList();
     _userController.showToast("질문 저장에 ${result['success'] ? "성공" : "실패"}하였습니다.");
     Get.back();
   }
@@ -211,7 +199,7 @@ class QuestionController extends GetxController {
   reportQuestion(String postId, QuestionType questionType, String reason, BuildContext context, dynamic nextDialog) async {
     Map result = await _apiProvider.reportQuestion(postId, reason);
 
-    questionType == QuestionType.personal ? getUserPersonalQuestionList() : getCommunityQuestionList();
+    questionType == QuestionType.personal ? getUserPersonalQuestionList(Get.find<MainScreenController>().userInUserPage.value.id!) : getCommunityQuestionList();
 
     Get.back();
     if (result['success']) {
@@ -229,15 +217,15 @@ class QuestionController extends GetxController {
     Get.back();
   }
 
-  getUserPersonalQuestionList() async {
+  getUserPersonalQuestionList(String userId) async {
     isPersonalQuestionListRefreshing.value = true;
-    personalQuestionList.value = (await _apiProvider.getUserPersonalQuestionList(_userController.user.id!))['content'];
+    personalQuestionList.value = (await _apiProvider.getUserPersonalQuestionList(userId))['content'];
     for (var question in personalQuestionList) {
       if (question.answerCount != 0) {
         personalQuestionAnswerList[question.id!] = (await _apiProvider.getCommentInQuestion(question.id!))['content'][0];
       }
     }
-    userLikeQuestionList = (await _apiProvider.getUserLikeQuestionList(_userController.user.id!))['content'];
+    userLikeQuestionList = (await _apiProvider.getUserLikeQuestionList(userId))['content'];
     isPersonalQuestionListRefreshing.value = false;
   }
 
@@ -290,7 +278,7 @@ class QuestionController extends GetxController {
     _userController.showToast("질문 답변에 ${result['success'] ? "성공" : "실패"}하였습니다.");
 
     if (questionType == QuestionType.personal) {
-      getUserPersonalQuestionList();
+      getUserPersonalQuestionList(Get.find<MainScreenController>().userInUserPage.value.id!);
       Get.back();
     } else {
       getCommunityQuestionCommentList(postId);

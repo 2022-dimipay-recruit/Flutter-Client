@@ -50,6 +50,7 @@ class FollowingList extends GetWidget<UserController> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<UserModel> responseData = snapshot.data as List<UserModel>;
+                      print(responseData[0].toJson());
 
                       return ListView.builder(
                           physics: BouncingScrollPhysics(),

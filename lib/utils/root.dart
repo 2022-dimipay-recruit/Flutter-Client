@@ -20,7 +20,7 @@ class Root extends GetWidget<AuthController> {
 
     return Obx(
       () {
-        if (Get.find<UserController>().user.id == null && !controller.isLogin.value) {
+        if (controller.isLogin.value && Get.find<UserController>().user.id == null) {
           return Splash();
         } else {
           if (controller.isLogin.value) {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_recruit_asked/controllers/mainscreen_controller.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
 import 'package:flutter_recruit_asked/screens/widgets/custom_tabbar.dart';
+import 'package:flutter_recruit_asked/screens/widgets/follow_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/personal_question_box.dart';
 import 'package:flutter_recruit_asked/screens/widgets/profile_widget.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_button.dart';
@@ -16,9 +18,7 @@ import '../themes/text_theme.dart';
 import 'question_ask.dart';
 
 class UserPage extends GetWidget<UserController> {
-  UserModel user;
-  bool isMyPage;
-  UserPage({required this.user, required this.isMyPage});
+  UserPage({Key? key}) : super(key: key);
 
   late double _height, _width;
 
@@ -29,14 +29,16 @@ class UserPage extends GetWidget<UserController> {
 
     QuestionController _questionController = Get.find<QuestionController>();
 
-    _questionController.getUserPersonalQuestionList();
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
         child: SafeArea(
           child: Obx(() {
-            if (isMyPage) { user = controller.userModel.value; }
+            Rx<UserModel> user = Get.find<MainScreenController>().userInUserPage;
+            bool isMyPage = controller.user == UserModel() || (controller.user == user.value);
+            print(user.toJson());
+
+            _questionController.getUserPersonalQuestionList(user.value.id!);
 
             return Stack(
               alignment: Alignment.topCenter,
@@ -49,7 +51,7 @@ class UserPage extends GetWidget<UserController> {
                       alignment: Alignment.center,
                       children: [
                         SizedBox(width: _width),
-                        Text(user.linkId!, style: appBarTitle),
+                        Text(user.value.linkId!, style: appBarTitle),
                         Positioned(
                           right: _width * 0.075,
                           child: SvgPicture.asset(
@@ -67,21 +69,7 @@ class UserPage extends GetWidget<UserController> {
                           ProfileWidget(user: user, showShareBtn: true),
                           Column(
                             children: [
-                              (
-                                !isMyPage ?
-                                GestureDetector(
-                                  onTap: () => controller.followOtherUser(user.id!),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.add_circle_outline_rounded, color: grayOne, size: 16),
-                                      SizedBox(width: 4),
-                                      Text("팔로우", style: profileFollowBtn)
-                                    ],
-                                  ),
-                                ) : SizedBox()
-                              ),
+                              !isMyPage ? FollowButton(btnType: controller.followBtnType, userId: user.value.id!) : SizedBox(),
                               SizedBox(height: 12),
                               PurpleButton(
                                 buttonMode: PurpleButtonMode.regular,

@@ -9,7 +9,7 @@ import '../../controllers/user_controller.dart';
 import '../../themes/text_theme.dart';
 
 class ProfileWidget extends GetWidget<UserController> {
-  final UserModel user;
+  final Rx<UserModel> user;
   final bool showShareBtn;
   ProfileWidget({required this.user, required this.showShareBtn});
 
@@ -17,12 +17,13 @@ class ProfileWidget extends GetWidget<UserController> {
   Widget build(BuildContext context) {
     final double _displayHeight = MediaQuery.of(context).size.height;
     final double _displayWidth = MediaQuery.of(context).size.width;
+    print(user.value.name!);
 
-    return Row(
+    return Obx(() => Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Get.find<UserController>().getProfileWidget(Get.find<UserController>().user, _displayWidth, 0.105),
+        Get.find<UserController>().getProfileWidget(user.value, _displayWidth, 0.105),
         SizedBox(width: _displayWidth * 0.05),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -32,37 +33,37 @@ class ProfileWidget extends GetWidget<UserController> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(user.name!, style: profileNickname),
+                Text(user.value.name!, style: profileNickname),
                 SizedBox(width: _displayWidth * 0.0125),
                 (showShareBtn ?
-                  GestureDetector(
-                    onTap: () => controller.shareProfile(user),
-                    child: Container(
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: purpleOne
-                      ),
-                      child: Center(
-                        child: SvgPicture.asset(
-                          "assets/images/icons/share.svg",
-                          color: Colors.white,
-                          width: 16,
-                          height: 16,
-                        ),
+                GestureDetector(
+                  onTap: () => controller.shareProfile(user.value),
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: purpleOne
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        "assets/images/icons/share.svg",
+                        color: Colors.white,
+                        width: 16,
+                        height: 16,
                       ),
                     ),
-                  ) : SizedBox()),
+                  ),
+                ) : SizedBox()),
               ],
             ),
             SizedBox(height: 4),
-            Text("팔로워 ${user.followers!}", style: profileFollwer),
+            Text("팔로워 ${user.value.followers!}", style: profileFollwer),
             SizedBox(height: 2),
-            Text(user.description!, style: profileIntroduce),
+            Text(user.value.description!, style: profileIntroduce),
           ],
         )
       ],
-    );
+    ));
   }
 }

@@ -57,7 +57,7 @@ class MyProfile extends GetWidget<UserController> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          ProfileWidget(user: controller.user, showShareBtn: false),
+                          ProfileWidget(user: controller.userModel, showShareBtn: false),
                           GestureDetector(
                               onTap: () => Get.to(ChangeProfile(), transition: Transition.rightToLeft),
                               child: SvgPicture.asset(

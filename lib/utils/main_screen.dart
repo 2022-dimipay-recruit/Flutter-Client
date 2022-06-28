@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_recruit_asked/controllers/mainscreen_controller.dart';
+import 'package:flutter_recruit_asked/controllers/user_controller.dart';
 import 'package:flutter_recruit_asked/themes/color_theme.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -57,7 +58,9 @@ class MainScreen extends GetWidget<MainScreenController> {
           selectedFontSize: 12,
           currentIndex: controller.selectNavigationBarIndex.value,
           onTap: (int index) {
-            if(index != 2) {
+            if (index != 2) {
+              if (index == 0) { controller.userInUserPage.value = Get.find<UserController>().user; }
+
               controller.selectNavigationBarIndex.value = index;
               controller.nowShowWindow.value = [controller.bottomNavigationBarPages[controller.selectNavigationBarIndex.value]];
             } else { //검색탭일경우 실행
