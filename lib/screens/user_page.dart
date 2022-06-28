@@ -27,6 +27,10 @@ class UserPage extends GetWidget<UserController> {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
 
+    QuestionController _questionController = Get.find<QuestionController>();
+
+    _questionController.getUserPersonalQuestionList();
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -93,12 +97,48 @@ class UserPage extends GetWidget<UserController> {
                 ),
                 Positioned(
                   bottom: 0,
-                  child: CustomTabBar(
-                      width: _width * 0.95,
-                      height: _height * 0.675,
-                      indicatorSizeMode: TabBarIndicatorSizeMode.text,
-                      tabWindowsList: questionTabView(["답변완료 160", "새질문 16", "거절질문 6"])
-                  ),
+                  child: Obx(() {
+                    if (!_questionController.isPersonalQuestionListRefreshing.value) {
+                    List<QuestionModel> responseData = _questionController.personalQuestionList;
+
+                    Map questionList = {};
+                    for (QuestionStatus tabStatus in QuestionStatus.values) {
+                      questionList.addAll({tabStatus: <QuestionModel>[]});
+                    }
+
+                    responseData.forEach((question) => (questionList[question.questionStatus!] as List<QuestionModel>).add(question));
+
+                    for (QuestionStatus tabStatus in QuestionStatus.values) {
+                      if (_questionController.sortType.value == SortButtonType.oldest) {
+                        questionList[tabStatus] = questionList[tabStatus]..sort((a,b) => a.date.toString().compareTo(b.date.toString()));
+                      } else {
+                        questionList[tabStatus] = questionList[tabStatus]..sort((b,a) => a.date.toString().compareTo(b.date.toString()));
+                      }
+                    }
+                    
+                    List tabViewTitleList = [];
+                    questionList.forEach((key, value) => tabViewTitleList.add("${(key as QuestionStatus).convertStr} ${value.length}"));
+
+                    return CustomTabBar(
+                        width: _width * 0.95,
+                        height: _height * 0.675,
+                        indicatorSizeMode: TabBarIndicatorSizeMode.text,
+                        tabWindowsList: questionTabView(
+                          tabViewTitleList,
+                          questionList,
+                          _questionController
+                        )
+                    );
+                    } else { //데이터를 불러오는 중
+                      return Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          SizedBox(width: _width, height: _height * 0.87),
+                          Center(child: CircularProgressIndicator()),
+                        ],
+                      );
+                    }
+                  })
                 )
               ],
             );
@@ -108,10 +148,12 @@ class UserPage extends GetWidget<UserController> {
     );
   }
 
-  List<CustomTabWindow> questionTabView(List tabTitleList) {
+  List<CustomTabWindow> questionTabView(List tabTitleList, Map questionList, QuestionController _questionController) {
     List<CustomTabWindow> result = [];
 
     for (String title in tabTitleList) {
+      List tabQuestionList = questionList[title.substring(0, title.lastIndexOf(" ")).convertQuestionStatus];
+
       result.add(
         CustomTabWindow(
           title: title,
@@ -120,7 +162,7 @@ class UserPage extends GetWidget<UserController> {
             children: [
               Positioned(
                 right: _width * 0.05,
-                child: SortButton(btnType: SortButtonType.latest)
+                child: SortButton(btnType: _questionController.sortType, questionType: QuestionType.personal),
               ),
               Positioned(
                 bottom: 0,
@@ -129,19 +171,11 @@ class UserPage extends GetWidget<UserController> {
                   height: _height * 0.57,
                   child: ListView.builder(
                       physics: BouncingScrollPhysics(),
-                      itemCount: 10,
+                      itemCount: tabQuestionList.length,
                       itemBuilder: (context, index) {
-                        return PersonalQuestionBox(
-                            question: QuestionModel(
-                                questionType: QuestionType.personal,
-                                publicMode: QuestionPublicMode.anonymous,
-                                questionStatus: title.contains("답변") ? QuestionStatus.answered : QuestionStatus.newQuestion,
-                                content: "하이 반가워",
-                                author: "윤지",
-                                date: "2주 전"
-                            ), index: index);
+                        return PersonalQuestionBox(question: tabQuestionList[index], index: index);
                       }
-                  ),
+                  )
                 ),
               )
             ],

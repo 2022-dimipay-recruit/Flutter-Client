@@ -8,6 +8,7 @@ import '../../controllers/question_controller.dart';
 import '../../models/question.dart';
 import '../../themes/color_theme.dart';
 import '../../themes/text_theme.dart';
+import '../widgets/community_question_box.dart';
 import '../widgets/custom_tabbar.dart';
 import '../widgets/personal_question_box.dart';
 
@@ -38,6 +39,11 @@ class QuestionList extends GetWidget<UserController> {
     _width = MediaQuery.of(context).size.width;
 
     MainScreenController _mainScreenController = Get.find<MainScreenController>();
+    QuestionController _questionController = Get.find<QuestionController>();
+
+    questionType == QuestionListType.myQuestion ?
+      _questionController.getUserAskQuestionList() :
+      _questionController.getUserBookmarkQuestionList();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -53,12 +59,43 @@ class QuestionList extends GetWidget<UserController> {
             ),
             Positioned(
               bottom: 0,
-              child: CustomTabBar(
-                  width: _width,
-                  height: _height * 0.78,
-                  indicatorSizeMode: TabBarIndicatorSizeMode.both,
-                  tabWindowsList: questionTabView(["개인 활동", "커뮤니티"])
-              ),
+              child: Obx(() {
+                if (!_questionController.isUserBookmarkQuestionListRefreshing.value || !_questionController.isUserAskQuestionListRefreshing.value) {
+                  List<QuestionModel> responseData =
+                  questionType == QuestionListType.myQuestion ?
+                    _questionController.userAskQuestionList :
+                    _questionController.userBookmarkQuestionList;
+
+                  Map questionList = {};
+                  for (QuestionType tabQuestionType in QuestionType.values) {
+                    questionList.addAll({tabQuestionType: <QuestionModel>[]});
+                  }
+
+                  responseData.forEach((question) => (questionList[question.questionType!] as List<QuestionModel>).add(question));
+
+                  List tabViewTitleList = [];
+                  questionList.forEach((key, value) => tabViewTitleList.add((key as QuestionType).convertStr));
+
+
+                  return CustomTabBar(
+                      width: _width,
+                      height: _height * 0.78,
+                      indicatorSizeMode: TabBarIndicatorSizeMode.both,
+                      tabWindowsList: questionTabView(
+                        tabViewTitleList,
+                        questionList,
+                      )
+                  );
+                } else { //데이터를 불러오는 중
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SizedBox(width: _width, height: _height * 0.87),
+                      Center(child: CircularProgressIndicator()),
+                    ],
+                  );
+                }
+              }),
             )
           ],
         ),
@@ -66,10 +103,12 @@ class QuestionList extends GetWidget<UserController> {
     );
   }
 
-  List<CustomTabWindow> questionTabView(List tabTitleList) {
+  List<CustomTabWindow> questionTabView(List tabTitleList, Map questionList) {
     List<CustomTabWindow> result = [];
 
     for (String title in tabTitleList) {
+      List tabQuestionList = questionList[title.convertQuestionType];
+
       result.add(
           CustomTabWindow(
               title: title,
@@ -83,17 +122,11 @@ class QuestionList extends GetWidget<UserController> {
                       height: _height * 0.7,
                       child: ListView.builder(
                           physics: BouncingScrollPhysics(),
-                          itemCount: 10,
+                          itemCount: tabQuestionList.length,
                           itemBuilder: (context, index) {
-                            return PersonalQuestionBox(
-                                question: QuestionModel(
-                                    questionType: title.contains("커뮤니티") ? QuestionType.community : QuestionType.personal,
-                                    publicMode: QuestionPublicMode.anonymous,
-                                    content: "하이 반가워",
-                                    author: "윤지",
-                                    date: "2주 전"
-                                ),
-                                index: index
+                            return (title.convertQuestionType == QuestionType.personal ?
+                                PersonalQuestionBox(question: tabQuestionList[index], index: index)
+                              : CommunityQuestionBox(question: tabQuestionList[index], index: index)
                             );
                           }
                       ),

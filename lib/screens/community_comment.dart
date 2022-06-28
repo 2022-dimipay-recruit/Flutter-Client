@@ -1,7 +1,3 @@
-import 'dart:io';
-
-import 'package:circular_profile_avatar/circular_profile_avatar.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
@@ -9,12 +5,11 @@ import 'package:flutter_recruit_asked/models/comment.dart';
 import 'package:flutter_recruit_asked/screens/widgets/community_question_box.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_switch.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../controllers/question_controller.dart';
 import '../models/question.dart';
+import '../models/user.dart';
 import '../themes/color_theme.dart';
 import '../themes/text_theme.dart';
 
@@ -31,6 +26,8 @@ class CommunityComment extends GetWidget<QuestionController> {
 
     UserController _userController = Get.find<UserController>();
 
+    controller.getCommunityQuestionCommentList(question.id!);
+
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -43,7 +40,7 @@ class CommunityComment extends GetWidget<QuestionController> {
               alignment: Alignment.center,
               children: [
                 SizedBox(width: _width),
-                Text("질문하기", style: appBarTitle),
+                Text("댓글 남기기", style: appBarTitle),
                 Positioned(
                   left: _width * 0.075,
                   child: GestureDetector(onTap: () => Get.back(), child: Icon(Icons.arrow_back_ios_sharp, size: 24)),
@@ -55,30 +52,43 @@ class CommunityComment extends GetWidget<QuestionController> {
               child: CommunityQuestionBox(question: question, index: 0)
             ),
             Positioned(
-                top: _height * 0.235,
-                left: _width * 0.06,
-                child: SizedBox(
-                  width: _width * 0.875,
-                  height: _height * 0.57,
-                  child: ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      itemCount: 10,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            commentBox(CommentModel(content: "반가워 댓글", author: "유도히", date: "1주 전")),
-                            SizedBox(height: _height * 0.015),
-                          ],
-                        );
-                      }
-                  ),
-                ),
+                bottom: _height * 0.08,
+                child:  Obx(() {
+                  if (!controller.isCommunityCommentListRefreshing.value) {
+                    List<CommentModel> responseData = controller.communityCommentList;
+
+                    return SizedBox(
+                      width: _width * 0.875,
+                      height: _height * 0.59,
+                      child: ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          itemCount: responseData.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                commentBox(responseData[index]),
+                                SizedBox(height: _height * 0.015),
+                              ],
+                            );
+                          }
+                      ),
+                    );
+                  } else { //데이터를 불러오는 중
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        SizedBox(width: _width, height: _height * 0.87),
+                        Center(child: CircularProgressIndicator()),
+                      ],
+                    );
+                  }
+                })
             ),
             Positioned(
               bottom: 0,
               child: Container(
                 width: _width,
-                height: _height * 0.1,
+                height: _height * 0.08,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: [
@@ -118,10 +128,13 @@ class CommunityComment extends GetWidget<QuestionController> {
                       child: PurpleButton(
                         buttonMode: PurpleButtonMode.regular,
                         text: "등록",
-                        clickAction: () {
-                          //TODO 댓글 달기
-                          Get.back();
-                        }
+                        clickAction:
+                            () => controller.commentToQuestion(
+                                question.id!,
+                                controller.answerTextController.text,
+                                (controller.commentMode.value.convertQuestionPublicMode == QuestionPublicMode.anonymous),
+                                question.questionType!,
+                            )
                       )
                     )
                   ],
@@ -135,11 +148,12 @@ class CommunityComment extends GetWidget<QuestionController> {
   }
 
   commentBox(CommentModel comment) {
+    print(comment.toJson());
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Get.find<UserController>().getProfileWidget(Get.find<UserController>().user, _width, 0.03),
+        Get.find<UserController>().getProfileWidget(comment.isAnony! ? UserModel() : comment.author!, _width, 0.03),
         SizedBox(width: 12),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,13 +162,13 @@ class CommunityComment extends GetWidget<QuestionController> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(comment.author, style: questionAnswerPageAuthor),
+                Text(comment.isAnony! ? "익명" : comment.author!.name!, style: questionAnswerPageAuthor),
                 SizedBox(width: 4),
-                Text(comment.date, style: questionAnswerPageDate)
+                Text(controller.simpleDateFormat.format(comment.date!), style: questionAnswerPageDate)
               ],
             ),
             SizedBox(height: 4),
-            Text(comment.content, style: questionAnswerPageContent),
+            Text(comment.content!, style: questionAnswerPageContent),
           ],
         )
       ],

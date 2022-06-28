@@ -33,7 +33,7 @@ class ChangeProfile extends GetWidget<UserController> {
               alignment: Alignment.center,
               children: [
                 SizedBox(width: _width),
-                Text("질문하기", style: appBarTitle),
+                Text("프로필 수정", style: appBarTitle),
                 Positioned(
                   left: _width * 0.075,
                   child: GestureDetector(onTap: () => Get.back(), child: Icon(Icons.arrow_back_ios_sharp, size: 24)),
@@ -69,12 +69,6 @@ class ChangeProfile extends GetWidget<UserController> {
                 content: controller.user.linkId!,
                 btnType: DetailListButtonType.gray,
                 canClick: false,
-            ),
-            DetailListButton(
-              title: "내 주소",
-              content: "asked.kr/${controller.user.linkId!}",
-              btnType: DetailListButtonType.gray,
-              canClick: false,
             ),
             Obx(() => DetailListButton(
                 title: "닉네임",

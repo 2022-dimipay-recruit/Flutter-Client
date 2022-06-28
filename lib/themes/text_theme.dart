@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'color_theme.dart';
 
+const splashLogo = TextStyle(
+    fontSize: 48, color: Colors.white, fontFamily: 'PyeongChangPeace', fontWeight: FontWeight.w700);
+
 const loginTitle = TextStyle(
     fontSize: 35, color: Colors.black, fontFamily: 'PyeongChangPeace', fontWeight: FontWeight.w700);
 const loginSubTitle = TextStyle(

@@ -68,7 +68,7 @@ class AuthController extends GetxController {
     if (_authResult.additionalUserInfo!.isNewUser) {
       Get.to(RegisterUserInfo());
     } else {
-      await _apiProvider.userLogin("google", loginUserInfo["userid"]);
+      print(await _apiProvider.userLogin("google", loginUserInfo["userid"]));
       isLogin.value = true;
     }
   }
@@ -164,8 +164,6 @@ class AuthController extends GetxController {
       type: loginUserInfo['type']
     );
 
-    Get.find<UserController>().user = _user;
-
-    Get.find<ApiProvider>().userSignUp(_user);
+   await Get.find<ApiProvider>().userSignUp(_user);
   }
 }

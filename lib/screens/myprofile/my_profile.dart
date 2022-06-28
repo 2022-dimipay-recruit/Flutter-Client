@@ -42,7 +42,7 @@ class MyProfile extends GetWidget<UserController> {
                       alignment: Alignment.center,
                       children: [
                         SizedBox(width: _width),
-                        Text("dohui_doch", style: appBarTitle),
+                        Text(controller.user.linkId!, style: appBarTitle),
                         Positioned(
                           right: _width * 0.075,
                           child: SvgPicture.asset(

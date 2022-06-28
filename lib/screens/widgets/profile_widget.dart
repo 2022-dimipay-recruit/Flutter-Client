@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import '../../controllers/user_controller.dart';
 import '../../themes/text_theme.dart';
 
-class ProfileWidget extends StatelessWidget {
+class ProfileWidget extends GetWidget<UserController> {
   final UserModel user;
   final bool showShareBtn;
   ProfileWidget({required this.user, required this.showShareBtn});
@@ -35,19 +35,22 @@ class ProfileWidget extends StatelessWidget {
                 Text(user.name!, style: profileNickname),
                 SizedBox(width: _displayWidth * 0.0125),
                 (showShareBtn ?
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: purpleOne
-                    ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        "assets/images/icons/share.svg",
-                        color: Colors.white,
-                        width: 16,
-                        height: 16,
+                  GestureDetector(
+                    onTap: () => controller.shareProfile(user),
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: purpleOne
+                      ),
+                      child: Center(
+                        child: SvgPicture.asset(
+                          "assets/images/icons/share.svg",
+                          color: Colors.white,
+                          width: 16,
+                          height: 16,
+                        ),
                       ),
                     ),
                   ) : SizedBox()),

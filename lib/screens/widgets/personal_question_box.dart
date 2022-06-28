@@ -1,5 +1,7 @@
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_recruit_asked/models/comment.dart';
 import 'package:flutter_recruit_asked/models/user.dart';
 import 'package:flutter_recruit_asked/screens/question_answer.dart';
 import 'package:flutter_recruit_asked/screens/widgets/questionbox_moreaction_dialog.dart';
@@ -12,8 +14,9 @@ import '../../controllers/question_controller.dart';
 import '../../controllers/user_controller.dart';
 import '../../models/question.dart';
 import '../../themes/text_theme.dart';
+import '../question_modify.dart';
 
-class PersonalQuestionBox extends StatelessWidget {
+class PersonalQuestionBox extends GetWidget<QuestionController> {
   final QuestionModel question;
   final int index;
   PersonalQuestionBox({required this.question, required this.index});
@@ -22,6 +25,11 @@ class PersonalQuestionBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final double _displayHeight = MediaQuery.of(context).size.height;
     final double _displayWidth = MediaQuery.of(context).size.width;
+
+    late CommentModel? questionAnswer;
+    if (question.questionStatus! == QuestionStatus.answered) {
+      questionAnswer = controller.personalQuestionAnswerList[question.id!];
+    }
 
     dynamic questionContentWidget = SizedBox(
       child: Hero(
@@ -49,9 +57,19 @@ class PersonalQuestionBox extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(question.publicMode!.convertStr, style: questionType),
+                    Text(question.publicMode! == QuestionPublicMode.anonymous ? question.publicMode!.convertStr : question.author!.name!, style: questionType),
                     SizedBox(height: 4),
                     Text(question.content!, style: questionContent),
+                    SizedBox(height: 6),
+                    (question.imageLink!.isNotEmpty ?
+                      SizedBox(
+                        height: _displayHeight * 0.2,
+                        child: ClipRRect(
+                          child: ExtendedImage.network(question.imageLink!),
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                      ) : SizedBox()
+                    )
                   ],
                 )
               ],
@@ -72,35 +90,47 @@ class PersonalQuestionBox extends StatelessWidget {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(question.author!, style: questionAnswerPerson),
+                            Text(questionAnswer!.author!.name!, style: questionAnswerPerson),
                             SizedBox(width: 2),
-                            Text(question.date!, style: questionAnswerDate),
+                            Text(controller.simpleDateFormat.format(questionAnswer.date!), style: questionAnswerDate),
                           ],
                         ),
                         SizedBox(height: 8),
-                        Text("메롱이다 메롱", style: questionAnswerContent)
+                        Text(questionAnswer.content!, style: questionAnswerContent),
                       ],
                     )
                   ],
                 ),
-            ) : SizedBox()
-      )
+              ) : SizedBox()
+            ),
           ],
         ),
       ),
     );
 
     List<Widget> optionButton = [
-      SmallActionButton(buttonType: SmallActionButtonType.remove, clickAction: () => print("지우기")),
+      SmallActionButton(buttonType: SmallActionButtonType.remove, clickAction: () => controller.removeQuestion(question.id!, QuestionType.personal)),
     ];
 
     if (question.questionStatus == QuestionStatus.answered) {
+      late SmallActionButton likeBtn;
+      bool isQuestionLike = false;
+      controller.userLikeQuestionList.forEach((element) => isQuestionLike = element.id! == question.id!);
+      if (isQuestionLike) {
+        likeBtn = SmallActionButton(buttonType: SmallActionButtonType.unlike, clickAction: () => controller.unlikeQuestion(question.id!, question.questionType!));
+      } else {
+        likeBtn = SmallActionButton(buttonType: SmallActionButtonType.like, clickAction: () => controller.likeQuestion(question.id!, question.questionType!));
+      }
+
       optionButton.insertAll(0, [
-        SmallActionButton(buttonType: SmallActionButtonType.like, clickAction: () => print("좋아요")),
-        SmallActionButton(buttonType: SmallActionButtonType.modify, clickAction: () => print("수정")),
+        likeBtn,
+        SmallActionButton(buttonType: SmallActionButtonType.modify, clickAction: () => Get.to(ModifyQuestion(question: question), transition: Transition.rightToLeft)),
       ]);
     } else {
       optionButton.insert(0, SmallActionButton(buttonType: SmallActionButtonType.answer, clickAction: () => Get.to(QuestionAnswer(question: question), transition: Transition.rightToLeft)));
+      if (question.questionStatus == QuestionStatus.newQuestion) {
+        optionButton.insert(1, SmallActionButton(buttonType: SmallActionButtonType.reject, clickAction: () => controller.rejectQuestion(question.id!, question.questionType!)));
+      }
     }
 
     return Container(
@@ -120,7 +150,7 @@ class PersonalQuestionBox extends StatelessWidget {
                 child: GestureDetector(
                     onTap: () => showDialog(
                         context: context,
-                        builder: (_) => QuestionBoxMoreActionDialog(questionContentWidget: questionContentWidget)),
+                        builder: (_) => QuestionBoxMoreActionDialog(questionContentWidget: questionContentWidget, question: question)),
                     child: Icon(Icons.more_vert_rounded, color: grayOne)
                 ),
               )

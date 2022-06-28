@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_recruit_asked/controllers/question_controller.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
 import 'package:flutter_recruit_asked/models/question.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart' hide Response, MultipartFile, FormData;
 import 'package:image_picker/image_picker.dart';
 
+import '../models/comment.dart';
 import '../models/user.dart';
 
 class ApiProvider {
@@ -30,11 +32,17 @@ class ApiProvider {
 
   userSignUp(UserModel user) async {
     try {
+      Map userData = user.toJson();
+      userData.remove('followers');
+      userData.remove('id');
+
       Response response = await _dio.post(
           "$apiUrl/users",
           options: Options(contentType: "application/json"),
-          data: user.toJson()
+          data: userData
       );
+
+      await userLogin(user.type! == "G" ? "google" : "kakao", user.firebaseAuthId!);
 
       return {
         "success": true,
@@ -60,11 +68,17 @@ class ApiProvider {
       await _storage.write(key: "diskedAccount_accessToken", value: authResponse.data['data']['accessToken']);
       await _storage.write(key: "diskedAccount_refreshToken", value: authResponse.data['data']['refreshToken']);
       await _storage.write(key: "diskedAccount_userId", value: authResponse.data['data']['userId']);
-      await storeUserData(authResponse.data['data']['userId']);
+      await getUserData(authResponse.data['data']['userId'], true);
 
-      return true;
-    } catch (e) {
-      return false;
+      return {
+        "success": true,
+        "content": authResponse.data['data']
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
     }
   }
 
@@ -75,20 +89,21 @@ class ApiProvider {
   fetchAccountData() async {
     if (!(await validateAccessToken())) { await refreshAccessToken(); }
 
-    bool isSuccessStoreData = await storeUserData((await _storage.read(key: "diskedAccount_userId"))!);
+    bool isSuccessStoreData = (await getUserData((await _storage.read(key: "diskedAccount_userId"))!, true))['success'];
     if (!isSuccessStoreData) { _userController.user = UserModel.fromJson(json.decode((await _storage.read(key: "diskedAccount_userInfo"))!)); }
   }
 
   validateAccessToken() async {
     String? accessToken = await _storage.read(key: "diskedAccount_accessToken");
+    String? userId = await _storage.read(key: "diskedAccount_userId");
     try {
       await _dio.get(
-        "$apiUrl/user/me",
+        "$apiUrl/users/id/$userId",
         options: Options(contentType: "application/json", headers: {'Authorization': 'Bearer $accessToken'}),
       );
 
       return true;
-    } catch (e) {
+    } on DioError catch (e) {
       return false;
     }
   }
@@ -115,7 +130,7 @@ class ApiProvider {
     }
   }
 
-  storeUserData(String uid) async {
+  getUserData(String uid, bool isMyData) async {
     try {
       Response infoResponse = await _dio.get(
         "$apiUrl/users/id/$uid",
@@ -126,13 +141,23 @@ class ApiProvider {
       Map data = infoResponse.data['data'][0];
       data['followers'] = ((await getFollowerUserList(uid))['content'] as List).length;
 
-      _userController.user = UserModel.fromJson(data);
-      await _storage.write(key: "diskedAccount_userInfo", value: json.encode(_userController.user.toJson()));
+      if (isMyData) { await storeUserData(data); }
 
-      return true;
+      return {
+        "success": true,
+        "content": data
+      };
     } on DioError catch (e) {
-      return false;
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
     }
+  }
+
+  storeUserData(Map userMapData) async {
+    _userController.user = UserModel.fromJson(userMapData);
+    await _storage.write(key: "diskedAccount_userInfo", value: json.encode(_userController.user.toJson()));
   }
 
   updateUserProfile(UserModel user) async {
@@ -243,6 +268,183 @@ class ApiProvider {
     }
   }
 
+  commentToQuestion(String postId, String content, bool isAnony) async {
+    try {
+      Response response = await _dio.post(
+        "$apiUrl/answers/create",
+        options: Options(contentType: "application/json",
+            headers: {'Authorization': 'Bearer $_accessToken'}),
+        data: {
+          "postId": postId,
+          "content": content,
+          "isAnony": isAnony
+        }
+      );
+
+      return {
+        "success": true,
+        "content": response.data['data']
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  getCommentInQuestion(String postId) async {
+    try {
+      Response response = await _dio.get(
+          "$apiUrl/answers/get/post/$postId",
+          options: Options(contentType: "application/json",
+              headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      List originalData = response.data['data'];
+      List<CommentModel> formattingData = [];
+      for (var question in originalData) {
+        question['author'] = UserModel.fromJson((await getUserData(question['authorId'], false))['content']);
+        formattingData.add(CommentModel.fromJson(question));
+      }
+
+      return {
+        "success": true,
+        "content": formattingData
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  getUserPersonalQuestionList(String id) async {
+    try {
+      Response response = await _dio.get(
+        "$apiUrl/posts/userId/$id",
+        options: Options(contentType: "application/json",
+            headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      List originalData = response.data['data'];
+      List<QuestionModel> formattingData = [];
+      originalData.forEach((element) => formattingData.add(QuestionModel.fromJson(element)));
+
+      return {
+        "success": true,
+        "content": formattingData
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  getUserCommunityQuestionList() async {
+    try {
+      Response response = await _dio.get(
+        "$apiUrl/posts/public",
+        options: Options(contentType: "application/json",
+            headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      List originalData = response.data['data'];
+      List<QuestionModel> formattingData = [];
+      originalData.forEach((element) => formattingData.add(QuestionModel.fromJson(element)));
+
+      return {
+        "success": true,
+        "content": formattingData
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  getUserLikeQuestionList(String userId) async {
+    try {
+      Response response = await _dio.get(
+        "$apiUrl/users/$userId/loves",
+        options: Options(contentType: "application/json",
+            headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      List originalData = response.data['data'];
+      List<QuestionModel> formattingData = [];
+      originalData.forEach((element) => formattingData.add(QuestionModel.fromJson(element)));
+
+      return {
+        "success": true,
+        "content": formattingData
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  getUserAskQuestionList(String userId) async {
+    try {
+      Response response = await _dio.get(
+        "$apiUrl/posts/userId/$userId",
+        options: Options(contentType: "application/json",
+            headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      List originalData = response.data['data'];
+      List<QuestionModel> formattingData = [];
+      for (var question in originalData) {
+        formattingData.add(QuestionModel.fromJson(question));
+      }
+
+      return {
+        "success": true,
+        "content": formattingData
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  getUserBookmarkQuestionList(String userId) async {
+    try {
+      Response response = await _dio.get(
+        "$apiUrl/users/$userId/bookmarks",
+        options: Options(contentType: "application/json",
+            headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      List originalData = response.data['data'];
+      List<QuestionModel> formattingData = [];
+      for (var question in originalData) {
+        question['author'] = (await getUserData(question['authorId'], false))['content'];
+        formattingData.add(QuestionModel.fromJson(question));
+      }
+
+      return {
+        "success": true,
+        "content": formattingData
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
   uploadImageFile(XFile? imageXFile) async {
     try {
       File imageFile = File(imageXFile!.path);
@@ -257,6 +459,164 @@ class ApiProvider {
         options: Options(contentType: "multipart/form-data",
             headers: {'Authorization': 'Bearer $_accessToken'}),
         data: formData,
+      );
+
+      return {
+        "success": true,
+        "content": response.data['data']
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+
+  askQuestion(QuestionModel question) async {
+    try {
+      Response response = await _dio.post(
+          "$apiUrl/posts/${question.questionType == QuestionType.community ? "public" : "userId/${_userController.user.id!}"}",
+          options: Options(contentType: "application/json", headers: {'Authorization': 'Bearer $_accessToken'}),
+          data: question.toJson()
+      );
+
+      return {
+        "success": true,
+        "content": response.data['data']
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  modifyQuestion(String postId, String content) async {
+    try {
+      Response response = await _dio.patch(
+        "$apiUrl/posts/$postId",
+        options: Options(contentType: "application/json", headers: {'Authorization': 'Bearer $_accessToken'}),
+        data: {
+          "content": content,
+        }
+      );
+
+      return {
+        "success": true,
+        "content": response.data['data']
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  removeQuestion(String postId) async {
+    try {
+      Response response = await _dio.delete(
+          "$apiUrl/posts/$postId",
+          options: Options(contentType: "application/json", headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      return {
+        "success": true,
+        "content": response.data['data']
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  rejectQuestion(String postId) async {
+    try {
+      Response response = await _dio.post(
+        "$apiUrl/posts/$postId/deny",
+        options: Options(contentType: "application/json", headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      return {
+        "success": true,
+        "content": response.data['data']
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  likeQuestion(String postId) async {
+    try {
+      Response response = await _dio.post(
+        "$apiUrl/posts/$postId/love",
+        options: Options(contentType: "application/json", headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      return {
+        "success": true,
+        "content": response.data['data']
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  unlikeQuestion(String postId) async {
+    try {
+      Response response = await _dio.delete(
+        "$apiUrl/posts/$postId/love",
+        options: Options(contentType: "application/json", headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      return {
+        "success": true,
+        "content": response.data['data']
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  bookmarkQuestion(String postId) async {
+    try {
+      Response response = await _dio.post(
+        "$apiUrl/posts/$postId/bookmark",
+        options: Options(contentType: "application/json", headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      return {
+        "success": true,
+        "content": response.data['data']
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  reportQuestion(String postId, String reportReason) async {
+    try {
+      Response response = await _dio.post(
+        "$apiUrl/posts/$postId/report",
+        options: Options(contentType: "application/json", headers: {'Authorization': 'Bearer $_accessToken'}),
+        data: {"reason": reportReason}
       );
 
       return {

@@ -1,11 +1,13 @@
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_recruit_asked/models/question.dart';
 import 'package:flutter_recruit_asked/services/api_provider.dart';
 import 'package:flutter_recruit_asked/themes/color_theme.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../models/user.dart';
 
@@ -57,7 +59,7 @@ class  UserController extends GetxController {
           color: purpleOne,
           borderRadius: BorderRadius.circular(150)
         ),
-        child: Icon(Icons.person_rounded, color: Colors.white, size: _width * 0.08),
+        child: Icon(Icons.person_rounded, color: Colors.white, size: _width * (radiusRatio * 1.4)),
       );
     } else {
       imageWidget = ExtendedImage.network(user.profileImg!, cache: true);
@@ -71,6 +73,8 @@ class  UserController extends GetxController {
       cacheImage: true,
     );
   }
+
+  shareProfile(UserModel shareUser) async => Share.share('매일매일 새롭고 재미있는 질문이 올라오는 곳, Disked 앱에 참여해보세요!\n\n${user.name!}님이 ${shareUser.name!}(${shareUser.linkId!}) 유저를 공유하였습니다.');
 
   followOtherUser(String uid) => _apiProvider.followOtherUser(uid);
 
@@ -92,10 +96,10 @@ class  UserController extends GetxController {
     user = modifyUser;
 
     if (result['success']) {
-      showToast("성공적으로 수정되었습니다,");
+      showToast("성공적으로 수정되었습니다.");
       profileImageUrl.value = "";
     } else {
-      showToast("오류가 발생하였습니다,");
+      showToast("오류가 발생하였습니다.");
     }
 
     Get.back();
