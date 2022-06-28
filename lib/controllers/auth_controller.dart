@@ -37,10 +37,6 @@ class AuthController extends GetxController {
     super.onInit();
     _firebaseUser.bindStream(authInstance.authStateChanges());
     _firebaseUser.value = authInstance.currentUser;
-    if (user != null) {
-      //Get.find<UserController>().user = await FirestoreDatabase().getUser(user!.uid);
-      //TODO 백엔드에서 유저 불러오는 코드 추가
-    }
   }
 
   void signInWithGoogle() async {

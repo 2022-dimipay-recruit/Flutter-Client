@@ -10,6 +10,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart' hide Response, MultipartFile, FormData;
 import 'package:image_picker/image_picker.dart';
 
+import '../models/alert.dart';
 import '../models/comment.dart';
 import '../models/user.dart';
 
@@ -526,10 +527,10 @@ class ApiProvider {
   }
 
 
-  askQuestion(QuestionModel question) async {
+  askQuestion(QuestionModel question, String userId) async {
     try {
       Response response = await _dio.post(
-          "$apiUrl/posts/${question.questionType == QuestionType.community ? "public" : "userId/${_userController.user.id!}"}",
+          "$apiUrl/posts/${question.questionType == QuestionType.community ? "public" : "userId/$userId"}",
           options: Options(contentType: "application/json", headers: {'Authorization': 'Bearer $_accessToken'}),
           data: question.toJson()
       );
@@ -674,6 +675,68 @@ class ApiProvider {
       return {
         "success": true,
         "content": response.data['data']
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+
+  getUserAlertList() async {
+    try {
+      Response response = await _dio.get(
+          "$apiUrl/notify",
+          options: Options(contentType: "application/json", headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      List originalData = response.data['data'];
+      List<AlertModel> formattingData = [];
+      originalData.forEach((element) => formattingData.add(AlertModel.fromJson(element)));
+
+      return {
+        "success": true,
+        "content": formattingData,
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  changeReadStatusAlert(String id) async {
+    try {
+      Response response = await _dio.patch(
+        "$apiUrl/notify/$id",
+        options: Options(contentType: "application/json", headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      return {
+        "success": true,
+        "content": response.data['data'],
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
+  removeAlert(String id) async {
+    try {
+      Response response = await _dio.delete(
+        "$apiUrl/notify/$id",
+        options: Options(contentType: "application/json", headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      return {
+        "success": true,
+        "content": response.data['data'],
       };
     } on DioError catch (e) {
       return {

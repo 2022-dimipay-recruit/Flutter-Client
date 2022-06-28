@@ -4,6 +4,7 @@ import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_recruit_asked/controllers/mainscreen_controller.dart';
 import 'package:flutter_recruit_asked/controllers/user_controller.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_button.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_switch.dart';
@@ -146,7 +147,7 @@ class AskQuestion extends GetWidget<QuestionController> {
                     PurpleButton(
                       buttonMode: PurpleButtonMode.regular,
                       text: "질문하기",
-                      clickAction: () => controller.uploadNewQuestion(questionType)
+                      clickAction: () => controller.uploadNewQuestion(questionType, Get.find<MainScreenController>().userInUserPage.value.id!)
                     )
                   ],
                 ),

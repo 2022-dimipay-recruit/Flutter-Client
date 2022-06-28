@@ -131,7 +131,7 @@ class QuestionController extends GetxController {
 
   getUserList() async => (await _apiProvider.getAllUserList())['content'];
 
-  uploadNewQuestion(QuestionType questionType) async {
+  uploadNewQuestion(QuestionType questionType, String userId) async {
     QuestionModel newQuestion = QuestionModel(
       questionType: questionType,
       publicMode: questionPublicMode.value.convertQuestionPublicMode,
@@ -140,7 +140,7 @@ class QuestionController extends GetxController {
       imageLink: questionImageFile.value?.path == "" ? "" : "${_apiProvider.apiUrl}/images/${(await _apiProvider.uploadImageFile(questionImageFile.value))['content']['filename']}"
     );
 
-    Map result = await _apiProvider.askQuestion(newQuestion);
+    Map result = await _apiProvider.askQuestion(newQuestion, userId);
 
     if (result['success']) {
       _userController.showToast("질문 등록에 성공하였습니다.");

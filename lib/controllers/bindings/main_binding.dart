@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../alert_controller.dart';
 import '../auth_controller.dart';
 import '../user_controller.dart';
 
@@ -23,5 +24,6 @@ class MainBinding extends Bindings {
     Get.put<MainScreenController>(MainScreenController(), permanent: true);
 
     Get.put<QuestionController>(QuestionController());
+    Get.put<AlertController>(AlertController());
   }
 }
