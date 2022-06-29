@@ -49,6 +49,9 @@ class RegisterUserInfo extends GetWidget<AuthController> {
                   controller.loginUserInfo["linkId"] = controller.idTextController.text;
 
                   if ((await controller.writeAccountInfo())['success']) {
+                    controller.nicknameTextController.text = "";
+                    controller.idTextController.text = "";
+
                     controller.isLogin.value = true;
                     Get.back();
                   } else {
