@@ -39,16 +39,19 @@ class ModifyQuestion extends GetWidget<QuestionController> {
           alignment: Alignment.topCenter,
           children: [
             SizedBox(width: _width, height: _height),
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                SizedBox(width: _width),
-                Text("질문 수정하기", style: appBarTitle),
-                Positioned(
-                  left: _width * 0.075,
-                  child: GestureDetector(onTap: () => Get.back(), child: Icon(Icons.arrow_back_ios_sharp, size: 24)),
-                )
-              ],
+            Positioned(
+              top: _height * 0.01,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(width: _width),
+                  Text("질문 수정하기", style: appBarTitle),
+                  Positioned(
+                    left: _width * 0.075,
+                    child: GestureDetector(onTap: () => Get.back(), child: Icon(Icons.arrow_back_ios_sharp, size: 24)),
+                  )
+                ],
+              ),
             ),
             Positioned(
               top: _height * 0.07,

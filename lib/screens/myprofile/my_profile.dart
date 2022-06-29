@@ -40,6 +40,7 @@ class MyProfile extends GetWidget<UserController> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    SizedBox(height: _height * 0.01),
                     Stack(
                       alignment: Alignment.center,
                       children: [
@@ -51,7 +52,7 @@ class MyProfile extends GetWidget<UserController> {
                         ),
                       ],
                     ),
-                    SizedBox(height: _height * 0.0225),
+                    SizedBox(height: _height * 0.024),
                     SizedBox(
                       width: _width * 0.85,
                       child: Row(

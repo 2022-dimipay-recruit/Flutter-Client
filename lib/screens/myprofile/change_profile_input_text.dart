@@ -31,13 +31,15 @@ class ChangeProfileInputText extends GetWidget<UserController> {
             Stack(
               alignment: Alignment.center,
               children: [
-                SizedBox(width: _width),
-                Text("프로필 $textType", style: appBarTitle),
+                SizedBox(width: _width, height: _height * 0.04),
+                Positioned(top: _height * 0.01, child: Text("프로필 $textType", style: appBarTitle)),
                 Positioned(
+                  top: _height * 0.01,
                   left: _width * 0.075,
                   child: GestureDetector(onTap: () => Get.back(), child: Icon(Icons.arrow_back_ios_sharp, size: 24)),
                 ),
                 Positioned(
+                  top: _height * 0.01,
                   right: _width * 0.075,
                   child: GestureDetector(
                     onTap: () {

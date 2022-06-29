@@ -30,8 +30,9 @@ class FollowingList extends GetWidget<UserController> {
           alignment: Alignment.topCenter,
           children: [
             SizedBox(width: _width, height: _height),
-            Text(controller.user.linkId!, style: appBarTitle),
+            Positioned(top: _height * 0.01, child: Text(controller.user.linkId!, style: appBarTitle)),
             Positioned(
+              top: _height * 0.01,
               left: _width * 0.075,
               child: GestureDetector(onTap: () => _mainScreenController.showWindow = _mainScreenController.bottomNavigationBarPages[3], child: Icon(Icons.arrow_back_ios_sharp, size: 24)),
             ),

@@ -37,22 +37,25 @@ class Community extends GetWidget<QuestionController> {
             alignment: Alignment.topCenter,
             children: [
               SizedBox(width: _width, height: _height),
+              Positioned(
+                top: _height * 0.01,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    SizedBox(width: _width),
+                    Text("커뮤니티", style: appBarTitle),
+                    Positioned(
+                      right: _width * 0.075,
+                      child: AlertButton(),
+                    ),
+                  ],
+                ),
+              ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      SizedBox(width: _width),
-                      Text("커뮤니티", style: appBarTitle),
-                      Positioned(
-                        right: _width * 0.075,
-                        child: AlertButton(),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: _height * 0.0225),
+                  SizedBox(height: _height * 0.06),
                   SizedBox(
                     width: _width * 0.875,
                     child: Row(
