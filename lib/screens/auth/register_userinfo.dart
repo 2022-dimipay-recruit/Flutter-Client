@@ -84,7 +84,7 @@ class RegisterUserInfo extends GetWidget<AuthController> {
           onChanged: (value) {
             formKey.currentState!.validate();
           },
-          validator: (value) => CheckTextValidate().validateTextLength(focusNode, value!, 2, 16),
+          validator: (value) => CheckTextValidate().validateTextLength(focusNode, value!, hintText.contains("닉네임") ? 3 : 6, 16),
         ),
       ),
     );
