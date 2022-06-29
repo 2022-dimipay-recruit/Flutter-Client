@@ -61,7 +61,7 @@ class AuthController extends GetxController {
     loginUserInfo["name"] = googleUser?.displayName;
     loginUserInfo["profileImgUrl"] = googleUser?.photoUrl;
 
-    if (_authResult.additionalUserInfo!.isNewUser) {
+    if (await _apiProvider.isAccountAlreadySignUp(loginUserInfo["userid"], "google")) {
       Get.to(RegisterUserInfo());
     } else {
       await _apiProvider.userLogin("google", loginUserInfo["userid"]);
@@ -105,7 +105,7 @@ class AuthController extends GetxController {
       UserCredential _authResult = await FirebaseAuth.instance
           .signInWithCustomToken(response.data['data']['token']);
 
-      if (await _apiProvider.isKakaoAccountAlreadySignUp(loginUserInfo["userid"])) {
+      if (await _apiProvider.isAccountAlreadySignUp(loginUserInfo["userid"], "kakao")) {
         await _apiProvider.userLogin("kakao", loginUserInfo["userid"]);
         isLogin.value = true;
       } else {
@@ -130,6 +130,7 @@ class AuthController extends GetxController {
   void logOut() async {
     try {
       await authInstance.signOut();
+      await _apiProvider.userLogout();
 
       Get.find<UserController>().clear();
 
@@ -152,7 +153,7 @@ class AuthController extends GetxController {
     }
   }
 
-  void writeAccountInfo() async {
+  writeAccountInfo() async {
     UserModel _user = UserModel(
       firebaseAuthId: loginUserInfo["userid"],
       email: loginUserInfo["email"],
@@ -162,6 +163,6 @@ class AuthController extends GetxController {
       type: loginUserInfo['type']
     );
 
-   await Get.find<ApiProvider>().userSignUp(_user);
+   return (await Get.find<ApiProvider>().userSignUp(_user));
   }
 }

@@ -84,6 +84,25 @@ class ApiProvider {
     }
   }
 
+  userLogout() async {
+    try {
+      Response authResponse = await _dio.post(
+        '$apiUrl/auth/logout',
+        options: Options(contentType: "application/json", headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      return {
+        "success": true,
+        "content": authResponse.data['data']
+      };
+    } on DioError catch (e) {
+      return {
+        "success": false,
+        "content": e.response?.data['data']["message"]
+      };
+    }
+  }
+
   checkNowLogin() async => (await loadSavedToken()) != null;
 
   loadSavedToken() async => await _storage.read(key: "diskedAccount_accessToken");
@@ -136,12 +155,12 @@ class ApiProvider {
     }
   }
 
-  isKakaoAccountAlreadySignUp(String uuid) async {
+  isAccountAlreadySignUp(String uuid, String accountKind) async {
     try {
       Response authResponse = await _dio.post(
         '$apiUrl/auth/login',
         options: Options(contentType: "application/json"),
-        data: {"kakaoUid": uuid},
+        data: {"${accountKind}Uid": uuid},
       );
 
       return true;
