@@ -62,10 +62,10 @@ class AuthController extends GetxController {
     loginUserInfo["profileImgUrl"] = googleUser?.photoUrl;
 
     if (await _apiProvider.isAccountAlreadySignUp(loginUserInfo["userid"], "google")) {
-      Get.to(RegisterUserInfo());
-    } else {
       await _apiProvider.userLogin("google", loginUserInfo["userid"]);
       isLogin.value = true;
+    } else {
+      Get.to(RegisterUserInfo());
     }
   }
 
