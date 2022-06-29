@@ -63,6 +63,9 @@ class Alert extends GetWidget<AlertController> {
                   }
 
                   responseData.forEach((alert) => (alertList[alert.type! == AlertType.newPost ? "팔로워 알림" : "활동 알림"] as List<AlertModel>).add(alert));
+                  for (String alertKind in tabViewTitleList) {
+                    alertList[alertKind] = alertList[alertKind]..sort((b,a) => a.date.toString().compareTo(b.date.toString()));
+                  }
 
 
                   return CustomTabBar(
