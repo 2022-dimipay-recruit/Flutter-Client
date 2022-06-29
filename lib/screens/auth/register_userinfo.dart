@@ -77,7 +77,7 @@ class RegisterUserInfo extends GetWidget<AuthController> {
           onChanged: (value) {
             formKey.currentState!.validate();
           },
-          validator: (value) => CheckTextValidate().validateTextLength(focusNode, value!, 16),
+          validator: (value) => CheckTextValidate().validateTextLength(focusNode, value!, 2, 16),
         ),
       ),
     );

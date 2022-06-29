@@ -82,7 +82,7 @@ class ChangeProfileInputText extends GetWidget<UserController> {
                     controller.changeTextLength.value = textEditingController.text.length;
                     controller.formKey.currentState!.validate();
                   },
-                  validator: (value) => CheckTextValidate().validateTextLength(focusNode, value!, lengthLimit),
+                  validator: (value) => CheckTextValidate().validateTextLength(focusNode, value!, 0, lengthLimit),
                 ),
               ),
             ),
