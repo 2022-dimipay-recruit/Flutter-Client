@@ -8,7 +8,8 @@ import '../../themes/text_theme.dart';
 
 enum FollowButtonType {
   follow,
-  unfollow
+  unfollow,
+  none
 }
 
 extension FollowButtonTypeExtension on FollowButtonType {
@@ -25,6 +26,16 @@ extension FollowButtonTypeExtension on FollowButtonType {
       case FollowButtonType.follow: return Icons.add_circle_outline_rounded;
       case FollowButtonType.unfollow: return Icons.remove_circle_outline_rounded;
       default: return Icons.circle;
+    }
+  }
+}
+
+extension FollowEnumExtension on bool {
+  FollowButtonType get convertFollowButtonType {
+    switch (this) {
+      case true: return FollowButtonType.follow;
+      case false: return FollowButtonType.unfollow;
+      default: return FollowButtonType.none;
     }
   }
 }

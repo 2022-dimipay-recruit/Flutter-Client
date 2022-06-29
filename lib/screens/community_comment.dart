@@ -36,16 +36,19 @@ class CommunityComment extends GetWidget<QuestionController> {
           alignment: Alignment.topCenter,
           children: [
             SizedBox(width: _width, height: _height),
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                SizedBox(width: _width),
-                Text("댓글 남기기", style: appBarTitle),
-                Positioned(
-                  left: _width * 0.075,
-                  child: GestureDetector(onTap: () => Get.back(), child: Icon(Icons.arrow_back_ios_sharp, size: 24)),
-                )
-              ],
+            Positioned(
+              top: _height * 0.01,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(width: _width),
+                  Text("댓글 남기기", style: appBarTitle),
+                  Positioned(
+                    left: _width * 0.075,
+                    child: GestureDetector(onTap: () => Get.back(), child: Icon(Icons.arrow_back_ios_sharp, size: 24)),
+                  )
+                ],
+              ),
             ),
             Positioned(
               top: _height * 0.07,
@@ -59,7 +62,7 @@ class CommunityComment extends GetWidget<QuestionController> {
 
                     return SizedBox(
                       width: _width * 0.875,
-                      height: _height * 0.59,
+                      height: _height * (question.imageLink! == "" ? 0.59 : 0.375),
                       child: ListView.builder(
                           physics: BouncingScrollPhysics(),
                           itemCount: responseData.length,

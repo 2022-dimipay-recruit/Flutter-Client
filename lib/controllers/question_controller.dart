@@ -96,7 +96,6 @@ class QuestionController extends GetxController {
   TextEditingController titleTextController = TextEditingController();
   TextEditingController contentTextController = TextEditingController();
   TextEditingController answerTextController = TextEditingController();
-  TextEditingController commentTextController = TextEditingController();
   Rx<SortButtonType> sortType = SortButtonType.latest.obs;
 
   RxList<QuestionModel> personalQuestionList = <QuestionModel>[].obs;
@@ -145,6 +144,7 @@ class QuestionController extends GetxController {
     if (result['success']) {
       _userController.showToast("질문 등록에 성공하였습니다.");
       questionImageFile.value = XFile("");
+      contentTextController.text = "";
       questionType == QuestionType.personal ? getUserPersonalQuestionList(Get.find<MainScreenController>().userInUserPage.value.id!) : getCommunityQuestionList();
       Get.back();
     } else {
@@ -157,6 +157,7 @@ class QuestionController extends GetxController {
 
     questionType == QuestionType.personal ? getUserPersonalQuestionList(Get.find<MainScreenController>().userInUserPage.value.id!) : getCommunityQuestionList();
     _userController.showToast("질문 수정에 ${result['success'] ? "성공" : "실패"}하였습니다.");
+    if (result['success']) { contentTextController.text = ""; }
     Get.back();
   }
 
@@ -276,6 +277,7 @@ class QuestionController extends GetxController {
     Map result = await _apiProvider.commentToQuestion(postId, content, isAnony);
 
     _userController.showToast("질문 답변에 ${result['success'] ? "성공" : "실패"}하였습니다.");
+    if (result['success']) { answerTextController.text = ""; }
 
     if (questionType == QuestionType.personal) {
       getUserPersonalQuestionList(Get.find<MainScreenController>().userInUserPage.value.id!);

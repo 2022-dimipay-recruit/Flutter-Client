@@ -111,9 +111,9 @@ class PersonalQuestionBox extends GetWidget<QuestionController> {
       ),
     );
 
-    List<Widget> optionButton = [
-      SmallActionButton(buttonType: SmallActionButtonType.remove, clickAction: () => controller.removeQuestion(question.id!, QuestionType.personal)),
-    ];
+    bool isMyQuestion = question.author!.id! == Get.find<UserController>().user.id!;
+    List<Widget> optionButton = [];
+    if (isMyQuestion) { optionButton.add(SmallActionButton(buttonType: SmallActionButtonType.remove, clickAction: () => controller.removeQuestion(question.id!, QuestionType.personal))); }
 
     if (question.questionStatus == QuestionStatus.answered) {
       late SmallActionButton likeBtn;
@@ -125,10 +125,8 @@ class PersonalQuestionBox extends GetWidget<QuestionController> {
         likeBtn = SmallActionButton(buttonType: SmallActionButtonType.like, clickAction: () => controller.likeQuestion(question.id!, question.questionType!));
       }
 
-      optionButton.insertAll(0, [
-        likeBtn,
-        SmallActionButton(buttonType: SmallActionButtonType.modify, clickAction: () => Get.to(ModifyQuestion(question: question), transition: Transition.rightToLeft)),
-      ]);
+      optionButton.insert(0, likeBtn);
+      if (isMyQuestion) { optionButton.insert(1, SmallActionButton(buttonType: SmallActionButtonType.modify, clickAction: () => Get.to(ModifyQuestion(question: question), transition: Transition.rightToLeft))); }
     } else {
       optionButton.insert(0, SmallActionButton(buttonType: SmallActionButtonType.answer, clickAction: () => Get.to(QuestionAnswer(question: question), transition: Transition.rightToLeft)));
       if (question.questionStatus == QuestionStatus.newQuestion) {
@@ -162,7 +160,7 @@ class PersonalQuestionBox extends GetWidget<QuestionController> {
           SizedBox(height: _displayHeight * 0.025),
           Center(
             child: SizedBox(
-              width: _displayWidth * (optionButton.length == 3 ? 0.75 : 0.55),
+              width: _displayWidth * (optionButton.length == 3 ? 0.75 : (optionButton.length == 2 ? 0.55 : 0.19)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: optionButton,

@@ -39,12 +39,14 @@ class Alert extends GetWidget<AlertController> {
           alignment: Alignment.topCenter,
           children:  [
             SizedBox(width: _width, height: _height),
-            Text(_userController.user.linkId!, style: appBarTitle),
+            Positioned(top: _height * 0.01, child: Text(_userController.user.linkId!, style: appBarTitle)),
             Positioned(
+              top: _height * 0.01,
               left: _width * 0.075,
               child: GestureDetector(onTap: () => _mainScreenController.showWindow = _mainScreenController.bottomNavigationBarPages[_mainScreenController.selectNavigationBarIndex.value], child: Icon(Icons.arrow_back_ios_sharp, size: 24)),
             ),
             Positioned(
+              top: _height * 0.01,
               right: _width * 0.075,
               child: GestureDetector(onTap: () => controller.removeAllAlert(), child: SvgPicture.asset("assets/images/icons/trash.svg")),
             ),
@@ -61,6 +63,9 @@ class Alert extends GetWidget<AlertController> {
                   }
 
                   responseData.forEach((alert) => (alertList[alert.type! == AlertType.newPost ? "팔로워 알림" : "활동 알림"] as List<AlertModel>).add(alert));
+                  for (String alertKind in tabViewTitleList) {
+                    alertList[alertKind] = alertList[alertKind]..sort((b,a) => a.date.toString().compareTo(b.date.toString()));
+                  }
 
 
                   return CustomTabBar(

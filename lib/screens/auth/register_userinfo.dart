@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_recruit_asked/controllers/user_controller.dart';
 import 'package:flutter_recruit_asked/screens/widgets/purple_button.dart';
 import 'package:flutter_recruit_asked/themes/color_theme.dart';
 import 'package:flutter_recruit_asked/themes/text_theme.dart';
@@ -42,14 +43,20 @@ class RegisterUserInfo extends GetWidget<AuthController> {
             child: PurpleButton(
               buttonMode: PurpleButtonMode.large,
               text: "확인",
-              clickAction: () {
+              clickAction: () async {
                 if (controller.idFormKey.currentState!.validate() && controller.nicknameFormKey.currentState!.validate()) {
                   controller.loginUserInfo["name"] = controller.nicknameTextController.text;
                   controller.loginUserInfo["linkId"] = controller.idTextController.text;
 
-                  controller.writeAccountInfo();
-                  controller.isLogin.value = true;
-                  Get.back();
+                  if ((await controller.writeAccountInfo())['success']) {
+                    controller.nicknameTextController.text = "";
+                    controller.idTextController.text = "";
+
+                    controller.isLogin.value = true;
+                    Get.back();
+                  } else {
+                    Get.find<UserController>().showToast("회원가입에 실패하였습니다.\n다시 시도해주세요.");
+                  }
                 }
               }
             ),
@@ -77,7 +84,7 @@ class RegisterUserInfo extends GetWidget<AuthController> {
           onChanged: (value) {
             formKey.currentState!.validate();
           },
-          validator: (value) => CheckTextValidate().validateTextLength(focusNode, value!, 16),
+          validator: (value) => CheckTextValidate().validateTextLength(focusNode, value!, 2, 16),
         ),
       ),
     );

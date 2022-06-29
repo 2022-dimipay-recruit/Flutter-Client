@@ -43,22 +43,25 @@ class UserPage extends GetWidget<UserController> {
             return Stack(
               alignment: Alignment.topCenter,
               children: [
+                Positioned(
+                  top: _height * 0.01,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SizedBox(width: _width),
+                      Text(user.value.linkId!, style: appBarTitle),
+                      Positioned(
+                        right: _width * 0.075,
+                        child: AlertButton(),
+                      ),
+                    ],
+                  ),
+                ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        SizedBox(width: _width),
-                        Text(user.value.linkId!, style: appBarTitle),
-                        Positioned(
-                          right: _width * 0.075,
-                          child: AlertButton(),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: _height * 0.0225),
+                    SizedBox(height: _height * 0.06),
                     SizedBox(
                       width: _width * 0.85,
                       child: Row(
@@ -67,7 +70,22 @@ class UserPage extends GetWidget<UserController> {
                           ProfileWidget(user: user, showShareBtn: true),
                           Column(
                             children: [
-                              !isMyPage ? FollowButton(btnType: controller.followBtnType, userId: user.value.id!) : SizedBox(),
+                              (!isMyPage ?
+                                FutureBuilder(
+                                  future: controller.isUserFollow(user.value.id!),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      controller.followBtnType.value = (!(snapshot.data as bool)).convertFollowButtonType;
+
+                                      return FollowButton(btnType: controller.followBtnType, userId: user.value.id!);
+                                    } else if (snapshot.hasError) { //데이터를 정상적으로 불러오지 못했을 때
+                                      return Icon(Icons.error_outline_rounded, size: 16);
+                                    } else { //데이터를 불러오는 중
+                                      return SizedBox(width: _height * 0.02, height: _height * 0.02, child: Center(child: CircularProgressIndicator()));
+                                    }
+                                  },
+                                ) : SizedBox()
+                              ),
                               SizedBox(height: 12),
                               PurpleButton(
                                 buttonMode: PurpleButtonMode.regular,
@@ -155,7 +173,7 @@ class UserPage extends GetWidget<UserController> {
               Positioned(
                 bottom: 0,
                 child: SizedBox(
-                  width: _width * 0.875,
+                  width: _width * 0.84,
                   height: _height * 0.57,
                   child: ListView.builder(
                       physics: BouncingScrollPhysics(),
