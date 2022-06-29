@@ -10,6 +10,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart' hide Response, MultipartFile, FormData;
 import 'package:image_picker/image_picker.dart';
 
+import '../controllers/auth_controller.dart';
 import '../models/alert.dart';
 import '../models/comment.dart';
 import '../models/user.dart';
@@ -29,6 +30,8 @@ class ApiProvider {
       _accessToken = await loadSavedToken();
 
       await fetchAccountData();
+    } else {
+      Get.find<AuthController>().isLogin.value = false;
     }
   }
 
