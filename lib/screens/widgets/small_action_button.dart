@@ -52,13 +52,18 @@ class SmallActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: clickAction,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset("assets/images/icons/${buttonType.convertIconName}.svg", color: grayOne, width: 15),
-          SizedBox(width: 8),
-          Text(buttonType.convertKor, style: actionBtn),
-        ],
+      child: Container(
+        width: 72,
+        height: 32,
+        color: Colors.transparent,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset("assets/images/icons/${buttonType.convertIconName}.svg", color: grayOne, width: 15),
+            SizedBox(width: 8),
+            Text(buttonType.convertKor, style: actionBtn),
+          ],
+        ),
       ),
     );
   }
