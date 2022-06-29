@@ -70,7 +70,22 @@ class UserPage extends GetWidget<UserController> {
                           ProfileWidget(user: user, showShareBtn: true),
                           Column(
                             children: [
-                              !isMyPage ? FollowButton(btnType: controller.followBtnType, userId: user.value.id!) : SizedBox(),
+                              (!isMyPage ?
+                                FutureBuilder(
+                                  future: controller.isUserFollow(user.value.id!),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      controller.followBtnType.value = (!(snapshot.data as bool)).convertFollowButtonType;
+
+                                      return FollowButton(btnType: controller.followBtnType, userId: user.value.id!);
+                                    } else if (snapshot.hasError) { //데이터를 정상적으로 불러오지 못했을 때
+                                      return Icon(Icons.error_outline_rounded, size: 16);
+                                    } else { //데이터를 불러오는 중
+                                      return SizedBox(width: _height * 0.02, height: _height * 0.02, child: Center(child: CircularProgressIndicator()));
+                                    }
+                                  },
+                                ) : SizedBox()
+                              ),
                               SizedBox(height: 12),
                               PurpleButton(
                                 buttonMode: PurpleButtonMode.regular,

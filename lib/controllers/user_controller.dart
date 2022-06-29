@@ -100,6 +100,19 @@ class  UserController extends GetxController {
     if (result['success']) { btnType.value = (btnType.value == FollowButtonType.follow ? FollowButtonType.unfollow : FollowButtonType.follow); }
   }
 
+  isUserFollow(String userId) async {
+    List<UserModel> followingList = await getFollowingUserList();
+
+    bool result = false;
+    followingList.forEach((element) {
+      if (element.id! == userId) {
+        result = true;
+      }
+    });
+
+    return result;
+  }
+
   getFollowingUserList() async => (await _apiProvider.getFollowingUserList(user.id!))['content'];
 
   changeProfileImg() async {

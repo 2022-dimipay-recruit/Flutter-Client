@@ -160,7 +160,7 @@ class PersonalQuestionBox extends GetWidget<QuestionController> {
           SizedBox(height: _displayHeight * 0.025),
           Center(
             child: SizedBox(
-              width: _displayWidth * (optionButton.length == 3 ? 0.75 : (optionButton.length == 2 ? 0.55 : 0.15)),
+              width: _displayWidth * (optionButton.length == 3 ? 0.75 : (optionButton.length == 2 ? 0.55 : 0.19)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: optionButton,
