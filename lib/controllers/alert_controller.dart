@@ -54,7 +54,7 @@ class AlertController extends GetxController {
 
   RxBool hasNewAlert = false.obs;
 
-  int refreshTime = 0;
+  int refreshTime = 5;
 
   ApiProvider _apiProvider = Get.find<ApiProvider>();
 
@@ -63,17 +63,19 @@ class AlertController extends GetxController {
     super.onInit();
 
     while (true) {
-      await Future.delayed(
-          Duration(seconds: 1),
-              () async {
-            if (refreshTime == 0) {
-              await getHasNewAlertStatus();
-              refreshTime = 15;
-            } else {
-              refreshTime = refreshTime - 1;
+      try {
+        await Future.delayed(
+            Duration(seconds: 1),
+                () async {
+              if (refreshTime == 0) {
+                await getHasNewAlertStatus();
+                refreshTime = 15;
+              } else {
+                refreshTime = refreshTime - 1;
+              }
             }
-          }
-      );
+        );
+      } catch (e) {}
     }
   }
 
